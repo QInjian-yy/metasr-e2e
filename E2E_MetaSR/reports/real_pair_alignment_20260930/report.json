@@ -1,0 +1,255 @@
+{
+  "data_root": "D:\\ddata",
+  "slide_id": "normal_001",
+  "pairs": [
+    {
+      "filename": "normal_001_31168_86336.jpg",
+      "lr_shape": [
+        256,
+        256,
+        3
+      ],
+      "hr_shape": [
+        8192,
+        8192,
+        3
+      ],
+      "downsample_method": "PIL LANCZOS",
+      "mae_0_255": 3.0790608723958335,
+      "correlation": 0.9971395185275747,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 3.1231193635102326,
+      "runner_up_translation_mae": 10.004070195976414,
+      "negative_controls_mae": {
+        "horizontal_flip": 38.22137451171875,
+        "vertical_flip": 56.637847900390625,
+        "transpose_xy": 48.097381591796875,
+        "rotate90": 51.632059733072914,
+        "wrong_region_pair": 60.88800557454427
+      }
+    },
+    {
+      "filename": "normal_001_57152_100032.jpg",
+      "lr_shape": [
+        256,
+        256,
+        3
+      ],
+      "hr_shape": [
+        8192,
+        8192,
+        3
+      ],
+      "downsample_method": "PIL LANCZOS",
+      "mae_0_255": 3.263147989908854,
+      "correlation": 0.9971448767020243,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 3.3274800554977455,
+      "runner_up_translation_mae": 12.66732787027402,
+      "negative_controls_mae": {
+        "horizontal_flip": 38.67634582519531,
+        "vertical_flip": 56.7748057047526,
+        "transpose_xy": 55.61927795410156,
+        "rotate90": 63.20728047688802,
+        "wrong_region_pair": 60.980428059895836
+      }
+    }
+  ],
+  "replays": [
+    {
+      "n": 1,
+      "calls": [
+        {
+          "region_index": 0,
+          "hr_path": "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg",
+          "box_y_x_h_w": [
+            4116,
+            1603,
+            256,
+            256
+          ],
+          "gt_max_abs_error": 0.0,
+          "matching_feature_and_box": true
+        }
+      ],
+      "loss_total": 0.5702438950538635,
+      "loss_cls": 0.515625,
+      "loss_sr": 0.5461891889572144,
+      "max_loss_difference_from_smoke": 0.0,
+      "scope": "forward only, no optimizer update"
+    },
+    {
+      "n": 2,
+      "calls": [
+        {
+          "region_index": 0,
+          "hr_path": "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg",
+          "box_y_x_h_w": [
+            4116,
+            1603,
+            256,
+            256
+          ],
+          "gt_max_abs_error": 0.0,
+          "matching_feature_and_box": true
+        },
+        {
+          "region_index": 1,
+          "hr_path": "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg",
+          "box_y_x_h_w": [
+            5702,
+            7172,
+            256,
+            256
+          ],
+          "gt_max_abs_error": 0.0,
+          "matching_feature_and_box": true
+        }
+      ],
+      "loss_total": 0.5727364420890808,
+      "loss_cls": 0.4921875,
+      "loss_sr": 0.8054896593093872,
+      "max_loss_difference_from_smoke": 0.0,
+      "scope": "forward only, no optimizer update"
+    }
+  ],
+  "decoder_checks": [
+    {
+      "region_index": 0,
+      "box_y_x_h_w": [
+        4116,
+        1603,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 8.881784197001252e-16
+    },
+    {
+      "region_index": 0,
+      "box_y_x_h_w": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 4.440892098500626e-15
+    },
+    {
+      "region_index": 0,
+      "box_y_x_h_w": [
+        137,
+        291,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 4.440892098500626e-15,
+      "negative_control_swapped_xy_error": 2.1083047014695078,
+      "negative_control_shifted_one_lr_pixel_error": 0.032207575805532684
+    },
+    {
+      "region_index": 0,
+      "box_y_x_h_w": [
+        3968,
+        3968,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 2.220446049250313e-15
+    },
+    {
+      "region_index": 0,
+      "box_y_x_h_w": [
+        7936,
+        7936,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 3.9968028886505635e-15
+    },
+    {
+      "region_index": 1,
+      "box_y_x_h_w": [
+        5702,
+        7172,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 3.552713678800501e-15
+    },
+    {
+      "region_index": 1,
+      "box_y_x_h_w": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 4.884981308350689e-15
+    },
+    {
+      "region_index": 1,
+      "box_y_x_h_w": [
+        137,
+        291,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 4.440892098500626e-15,
+      "negative_control_swapped_xy_error": 2.123280755165058,
+      "negative_control_shifted_one_lr_pixel_error": 0.021939766737173905
+    },
+    {
+      "region_index": 1,
+      "box_y_x_h_w": [
+        3968,
+        3968,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 1.7763568394002505e-15
+    },
+    {
+      "region_index": 1,
+      "box_y_x_h_w": [
+        7936,
+        7936,
+        256,
+        256
+      ],
+      "oracle_points": 64,
+      "gt_max_abs_error": 0.0,
+      "decoder_fp64_max_abs_error": 2.886579864025407e-15
+    }
+  ],
+  "original_wsi_available": false,
+  "status": "passed",
+  "limitations": [
+    "Checks cover these two exported image pairs, not the original WSI file.",
+    "Image similarity and integer-LR shift search do not prove sub-HR-pixel registration.",
+    "The decoder oracle checks 64 points per crop in FP64 using features from real LR images."
+  ]
+}

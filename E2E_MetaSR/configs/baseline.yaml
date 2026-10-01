@@ -1,0 +1,18 @@
+metasr:
+  scale: 32
+  lr_chunk_size: 256
+  checkpoint_rdb: true
+  rgb_range: 1
+  rdn_blocks: 16
+# Official B baseline: G0=64, kernel=3, D=16, C=8, growth=64.
+lambda_sr: 0.1             # 0 = SR OFF; also supports 1.0
+sr_train_crop: 256
+training:
+  use_region_microbatch: false
+  region_microbatch_size: 1
+precision: bf16            # fp32 is available; equivalence tests always use fp32.
+lr: 1.0e-5
+weight_decay: 1.0e-4
+epochs: 20
+early_stopping_patience: 5
+seed: 1

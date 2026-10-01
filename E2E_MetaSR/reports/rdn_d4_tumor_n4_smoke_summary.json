@@ -1,0 +1,22 @@
+{
+  "config": "configs\\rdn_d4.yaml",
+  "data_root": "D:\\ddata",
+  "slide_id": "tumor_111",
+  "n": 4,
+  "label": 1,
+  "scope": "Measured real WSI full-batch BF16 D4 single training step, four independent SR crops, one backward and one Adam update. No full-vs-microbatch equivalence test.",
+  "status": "passed",
+  "training_stages": {
+    "forward": true,
+    "backward": true,
+    "optimizer_step": true
+  },
+  "gradients_finite": true,
+  "allocated_GiB": 2.6348648071289062,
+  "reserved_GiB": 3.06640625,
+  "elapsed_seconds": 6.981747099998756,
+  "prior_n4_allocated_estimate_GiB": 2.635183334350586,
+  "n38_allocated_linear_estimate_from_n2_n4_GiB": 23.898094177246094,
+  "estimate_note": "N=38 is extrapolated, not measured. N=2 used normal_001; N=4 uses tumor_111. CUDA workspaces and allocator reservations may change at larger batch sizes.",
+  "raw_report": "reports/real_tumor_111_d4_n4_20260930.json"
+}

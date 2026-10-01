@@ -1,0 +1,55 @@
+{
+  "n": 6,
+  "size": 256,
+  "use_region_microbatch": true,
+  "micro_batch_size": 1,
+  "precision": "bf16",
+  "lambda_sr": 0.0,
+  "sr_crop": 256,
+  "mode": "joint",
+  "output": "reports\\region_mem_cls_n6_micro1.json",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_bytes": 6441926656,
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "checkpoint_rdb": true,
+  "normalization": "GroupNorm",
+  "input_shape": [
+    6,
+    3,
+    256,
+    256
+  ],
+  "synthetic": true,
+  "includes_adam_step": true,
+  "lr_chunk_size": 256,
+  "effective_region_batch_size": 1,
+  "training_stages": {
+    "forward": true,
+    "backward": true,
+    "optimizer_step": true
+  },
+  "allocated_before_step": 136048640,
+  "reserved_before_step": 159383552,
+  "loss_total": 0.93359375,
+  "loss_cls": 0.93359375,
+  "loss_sr": 0.0,
+  "logits": [
+    [
+      -0.16796875,
+      -0.6015625
+    ]
+  ],
+  "gradient_l2": {
+    "rdn": 2.204176664352417,
+    "resnet18_gn": 24.27226448059082,
+    "abmil": 0.004220588132739067,
+    "classifier": 21.426353454589844,
+    "pos2weight": 0.0
+  },
+  "gradients_finite": true,
+  "status": "passed",
+  "max_memory_allocated": 2838207488,
+  "max_memory_reserved": 3294625792,
+  "elapsed_seconds": 105.59141289999934
+}

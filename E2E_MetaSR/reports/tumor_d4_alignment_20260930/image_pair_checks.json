@@ -1,0 +1,139 @@
+{
+  "sample": {
+    "slide_id": "tumor_111",
+    "n_regions": 4,
+    "label": 1,
+    "lr_paths": [
+      "D:\\ddata\\images_256\\tumor_111_12352_123776.jpg",
+      "D:\\ddata\\images_256\\tumor_111_12352_140160.jpg",
+      "D:\\ddata\\images_256\\tumor_111_15808_164032.jpg",
+      "D:\\ddata\\images_256\\tumor_111_28736_140160.jpg"
+    ],
+    "hr_paths": [
+      "D:\\ddata\\images_8192\\tumor_111_12352_123776.jpg",
+      "D:\\ddata\\images_8192\\tumor_111_12352_140160.jpg",
+      "D:\\ddata\\images_8192\\tumor_111_15808_164032.jpg",
+      "D:\\ddata\\images_8192\\tumor_111_28736_140160.jpg"
+    ],
+    "manifest_n_regions": 4
+  },
+  "config": {
+    "metasr": {
+      "scale": 32,
+      "lr_chunk_size": 256,
+      "checkpoint_rdb": true,
+      "rgb_range": 1,
+      "rdn_blocks": 4
+    },
+    "lambda_sr": 0.1,
+    "sr_train_crop": 256,
+    "training": {
+      "use_region_microbatch": false,
+      "region_microbatch_size": 1
+    },
+    "precision": "bf16",
+    "lr": 1e-05,
+    "weight_decay": 0.0001,
+    "epochs": 20,
+    "early_stopping_patience": 5,
+    "seed": 1
+  },
+  "pairs": [
+    {
+      "filename": "tumor_111_12352_123776.jpg",
+      "mae_0_255": 3.9602762858072915,
+      "correlation": 0.9942121131372288,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 3.998645074575095,
+      "runner_up_translation_mae": 16.91406520985085,
+      "orientation_negative_mae": {
+        "flip_x": 49.88408406575521,
+        "flip_y": 60.581888834635414,
+        "transpose": 40.680206298828125,
+        "rotate90": 56.48467000325521
+      }
+    },
+    {
+      "filename": "tumor_111_12352_140160.jpg",
+      "mae_0_255": 3.370452880859375,
+      "correlation": 0.9948352403369717,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 3.401719129379119,
+      "runner_up_translation_mae": 12.281190383281304,
+      "orientation_negative_mae": {
+        "flip_x": 44.8465576171875,
+        "flip_y": 50.40599568684896,
+        "transpose": 65.57178751627605,
+        "rotate90": 50.42608642578125
+      }
+    },
+    {
+      "filename": "tumor_111_15808_164032.jpg",
+      "mae_0_255": 4.159037272135417,
+      "correlation": 0.994031248824475,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 4.186589490114464,
+      "runner_up_translation_mae": 15.370485388484218,
+      "orientation_negative_mae": {
+        "flip_x": 42.23566691080729,
+        "flip_y": 46.63958740234375,
+        "transpose": 47.59068806966146,
+        "rotate90": 46.38349405924479
+      }
+    },
+    {
+      "filename": "tumor_111_28736_140160.jpg",
+      "mae_0_255": 4.4365488688151045,
+      "correlation": 0.9943772341553138,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 4.444160813388831,
+      "runner_up_translation_mae": 18.781434269857787,
+      "orientation_negative_mae": {
+        "flip_x": 59.81115214029948,
+        "flip_y": 52.8616689046224,
+        "transpose": 65.24684143066406,
+        "rotate90": 60.87651062011719
+      }
+    }
+  ],
+  "training_calls": [],
+  "decoder_checks": [],
+  "pair_mae_matrix": [
+    [
+      3.9602762858072915,
+      56.49609375,
+      54.10517883300781,
+      55.54265848795573
+    ],
+    [
+      56.387664794921875,
+      3.370452880859375,
+      45.22295633951823,
+      67.33202616373698
+    ],
+    [
+      53.99642435709635,
+      45.34993998209635,
+      4.159037272135417,
+      56.73835245768229
+    ],
+    [
+      55.69164021809896,
+      67.46853637695312,
+      56.87434387207031,
+      4.4365488688151045
+    ]
+  ]
+}

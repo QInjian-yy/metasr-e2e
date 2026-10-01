@@ -1,0 +1,431 @@
+{
+  "sample": {
+    "slide_id": "tumor_111",
+    "n_regions": 4,
+    "label": 1,
+    "lr_paths": [
+      "D:\\ddata\\images_256\\tumor_111_12352_123776.jpg",
+      "D:\\ddata\\images_256\\tumor_111_12352_140160.jpg",
+      "D:\\ddata\\images_256\\tumor_111_15808_164032.jpg",
+      "D:\\ddata\\images_256\\tumor_111_28736_140160.jpg"
+    ],
+    "hr_paths": [
+      "D:\\ddata\\images_8192\\tumor_111_12352_123776.jpg",
+      "D:\\ddata\\images_8192\\tumor_111_12352_140160.jpg",
+      "D:\\ddata\\images_8192\\tumor_111_15808_164032.jpg",
+      "D:\\ddata\\images_8192\\tumor_111_28736_140160.jpg"
+    ],
+    "manifest_n_regions": 4
+  },
+  "config": {
+    "metasr": {
+      "scale": 32,
+      "lr_chunk_size": 256,
+      "checkpoint_rdb": true,
+      "rgb_range": 1,
+      "rdn_blocks": 4
+    },
+    "lambda_sr": 0.1,
+    "sr_train_crop": 256,
+    "training": {
+      "use_region_microbatch": false,
+      "region_microbatch_size": 1
+    },
+    "precision": "bf16",
+    "lr": 1e-05,
+    "weight_decay": 0.0001,
+    "epochs": 20,
+    "early_stopping_patience": 5,
+    "seed": 1
+  },
+  "pairs": [
+    {
+      "filename": "tumor_111_12352_123776.jpg",
+      "mae_0_255": 3.9602762858072915,
+      "correlation": 0.9942121131372288,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 3.998645074575095,
+      "runner_up_translation_mae": 16.91406520985085,
+      "orientation_negative_mae": {
+        "flip_x": 49.88408406575521,
+        "flip_y": 60.581888834635414,
+        "transpose": 40.680206298828125,
+        "rotate90": 56.48467000325521
+      }
+    },
+    {
+      "filename": "tumor_111_12352_140160.jpg",
+      "mae_0_255": 3.370452880859375,
+      "correlation": 0.9948352403369717,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 3.401719129379119,
+      "runner_up_translation_mae": 12.281190383281304,
+      "orientation_negative_mae": {
+        "flip_x": 44.8465576171875,
+        "flip_y": 50.40599568684896,
+        "transpose": 65.57178751627605,
+        "rotate90": 50.42608642578125
+      }
+    },
+    {
+      "filename": "tumor_111_15808_164032.jpg",
+      "mae_0_255": 4.159037272135417,
+      "correlation": 0.994031248824475,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 4.186589490114464,
+      "runner_up_translation_mae": 15.370485388484218,
+      "orientation_negative_mae": {
+        "flip_x": 42.23566691080729,
+        "flip_y": 46.63958740234375,
+        "transpose": 47.59068806966146,
+        "rotate90": 46.38349405924479
+      }
+    },
+    {
+      "filename": "tumor_111_28736_140160.jpg",
+      "mae_0_255": 4.4365488688151045,
+      "correlation": 0.9943772341553138,
+      "best_translation_dy_dx": [
+        0,
+        0
+      ],
+      "best_translation_mae": 4.444160813388831,
+      "runner_up_translation_mae": 18.781434269857787,
+      "orientation_negative_mae": {
+        "flip_x": 59.81115214029948,
+        "flip_y": 52.8616689046224,
+        "transpose": 65.24684143066406,
+        "rotate90": 60.87651062011719
+      }
+    }
+  ],
+  "training_calls": [
+    {
+      "index": 0,
+      "hr_path": "D:\\ddata\\images_8192\\tumor_111_12352_123776.jpg",
+      "box_y_x_h_w": [
+        6359,
+        3407,
+        256,
+        256
+      ],
+      "gt_pixel_max_error": 0.0,
+      "correct_region_feature_and_absolute_box": true
+    },
+    {
+      "index": 1,
+      "hr_path": "D:\\ddata\\images_8192\\tumor_111_12352_140160.jpg",
+      "box_y_x_h_w": [
+        4909,
+        1607,
+        256,
+        256
+      ],
+      "gt_pixel_max_error": 0.0,
+      "correct_region_feature_and_absolute_box": true
+    },
+    {
+      "index": 2,
+      "hr_path": "D:\\ddata\\images_8192\\tumor_111_15808_164032.jpg",
+      "box_y_x_h_w": [
+        6701,
+        5579,
+        256,
+        256
+      ],
+      "gt_pixel_max_error": 0.0,
+      "correct_region_feature_and_absolute_box": true
+    },
+    {
+      "index": 3,
+      "hr_path": "D:\\ddata\\images_8192\\tumor_111_28736_140160.jpg",
+      "box_y_x_h_w": [
+        3547,
+        1271,
+        256,
+        256
+      ],
+      "gt_pixel_max_error": 0.0,
+      "correct_region_feature_and_absolute_box": true
+    }
+  ],
+  "decoder_checks": [
+    {
+      "region": 0,
+      "box": [
+        6359,
+        3407,
+        256,
+        256
+      ],
+      "pixels_checked": 65536,
+      "fp64_max_abs_error": 6.217248937900877e-15
+    },
+    {
+      "region": 0,
+      "box": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 2.6645352591003757e-15
+    },
+    {
+      "region": 0,
+      "box": [
+        7936,
+        7936,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 3.1086244689504383e-15
+    },
+    {
+      "region": 0,
+      "box": [
+        137,
+        291,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 2.6645352591003757e-15,
+      "negative_controls": {
+        "swapped_xy": 0.8225626658562677,
+        "shift_one_hr_pixel": 0.041785038979568645,
+        "shift_one_lr_pixel": 0.016708881979628887,
+        "reset_crop_origin": 1.6221191135411257
+      }
+    },
+    {
+      "region": 1,
+      "box": [
+        4909,
+        1607,
+        256,
+        256
+      ],
+      "pixels_checked": 65536,
+      "fp64_max_abs_error": 5.773159728050814e-15
+    },
+    {
+      "region": 1,
+      "box": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 2.6645352591003757e-15
+    },
+    {
+      "region": 1,
+      "box": [
+        7936,
+        7936,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 3.774758283725532e-15
+    },
+    {
+      "region": 1,
+      "box": [
+        137,
+        291,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 4.218847493575595e-15,
+      "negative_controls": {
+        "swapped_xy": 1.0296570004140726,
+        "shift_one_hr_pixel": 0.053690128450501584,
+        "shift_one_lr_pixel": 0.5407746704649976,
+        "reset_crop_origin": 1.3833420266506404
+      }
+    },
+    {
+      "region": 2,
+      "box": [
+        6701,
+        5579,
+        256,
+        256
+      ],
+      "pixels_checked": 65536,
+      "fp64_max_abs_error": 5.551115123125783e-15
+    },
+    {
+      "region": 2,
+      "box": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 3.3306690738754696e-15
+    },
+    {
+      "region": 2,
+      "box": [
+        7936,
+        7936,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 2.3314683517128287e-15
+    },
+    {
+      "region": 2,
+      "box": [
+        137,
+        291,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 3.552713678800501e-15,
+      "negative_controls": {
+        "swapped_xy": 0.8202541475938769,
+        "shift_one_hr_pixel": 0.04013706690926133,
+        "shift_one_lr_pixel": 0.21784652087149592,
+        "reset_crop_origin": 1.5338740492845055
+      }
+    },
+    {
+      "region": 3,
+      "box": [
+        3547,
+        1271,
+        256,
+        256
+      ],
+      "pixels_checked": 65536,
+      "fp64_max_abs_error": 3.774758283725532e-15
+    },
+    {
+      "region": 3,
+      "box": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 2.6645352591003757e-15
+    },
+    {
+      "region": 3,
+      "box": [
+        7936,
+        7936,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 1.9984014443252818e-15
+    },
+    {
+      "region": 3,
+      "box": [
+        137,
+        291,
+        256,
+        256
+      ],
+      "pixels_checked": 64,
+      "fp64_max_abs_error": 2.4424906541753444e-15,
+      "negative_controls": {
+        "swapped_xy": 1.0030441566029111,
+        "shift_one_hr_pixel": 0.043702864456482304,
+        "shift_one_lr_pixel": 0.2883110038523766,
+        "reset_crop_origin": 1.5608416293882128
+      }
+    }
+  ],
+  "pair_mae_matrix": [
+    [
+      3.9602762858072915,
+      56.49609375,
+      54.10517883300781,
+      55.54265848795573
+    ],
+    [
+      56.387664794921875,
+      3.370452880859375,
+      45.22295633951823,
+      67.33202616373698
+    ],
+    [
+      53.99642435709635,
+      45.34993998209635,
+      4.159037272135417,
+      56.73835245768229
+    ],
+    [
+      55.69164021809896,
+      67.46853637695312,
+      56.87434387207031,
+      4.4365488688151045
+    ]
+  ],
+  "gradient_norms": {
+    "rdn": 1.5015535354614258,
+    "p2w": 1.176915168762207,
+    "abmil": 0.01023281179368496
+  },
+  "cuda_training": {
+    "forward": true,
+    "backward": true,
+    "adam_step": true,
+    "encoder_input_shape": [
+      4,
+      3,
+      256,
+      256
+    ],
+    "mil_inputs": [
+      [
+        4,
+        512
+      ]
+    ],
+    "loss_sr": 0.756476640701294,
+    "independent_mean_of_four_sr_losses": 0.756476640701294,
+    "max_loss_difference_from_smoke": 0.0
+  },
+  "sr_only_gradient_oracle": {
+    "feature_and_p2w_checked": true,
+    "max_abs_errors": [
+      2.3592239273284576e-16,
+      4.440892098500626e-16,
+      4.996003610813204e-16,
+      3.3306690738754696e-16,
+      1.6653345369377348e-16
+    ]
+  },
+  "status": "passed",
+  "limitations": [
+    "Exported JPEG pairs only; no original WSI or extraction transform was inspected.",
+    "Downsample similarity and integer-LR shift tests do not prove exact sub-HR-pixel physical registration.",
+    "Independent FP64 oracle validates coordinates/layout on real CUDA BF16 features, not BF16-vs-FP64 numerical equivalence.",
+    "Randomly initialized SR predictions are not expected to visually match ground truth."
+  ]
+}

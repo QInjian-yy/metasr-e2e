@@ -1,0 +1,213 @@
+{
+  "precision": "bf16",
+  "data_root": "D:\\ddata",
+  "same_initial_state": true,
+  "initial_state_sha256": "44a6c7beafe2ab714fbb597b0a434721f4c7f7f95199cbc1531891911374ab34",
+  "same_hr_crops": true,
+  "hr_crops": [
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg"
+      ],
+      "box_y_x_h_w": [
+        4116,
+        1603,
+        256,
+        256
+      ]
+    },
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+      ],
+      "box_y_x_h_w": [
+        5702,
+        7172,
+        256,
+        256
+      ]
+    }
+  ],
+  "atol": 2e-05,
+  "rtol": 0.0002,
+  "tolerance_source": "tests/test_engine.py batching gradient comparison",
+  "losses": {
+    "loss_total": {
+      "full": 0.5727364420890808,
+      "micro1": 0.5727325081825256,
+      "abs_error": 3.933906555175781e-06
+    },
+    "loss_cls": {
+      "full": 0.4921875,
+      "micro1": 0.4921875,
+      "abs_error": 0.0
+    },
+    "loss_sr": {
+      "full": 0.8054896593093872,
+      "micro1": 0.8054503202438354,
+      "abs_error": 3.933906555175781e-05
+    }
+  },
+  "logits_max_abs_error": 0.0,
+  "parameter_tensors_compared": 371,
+  "none_in_both": [],
+  "all_parameters": {
+    "elements": 33919386,
+    "reference_sq": 1043.4351697384998,
+    "actual_sq": 1080.119256268097,
+    "difference_sq": 22.897515910312183,
+    "dot": 1050.3284550481428,
+    "outside_tolerance": 15712561,
+    "bitwise_different": 31858168,
+    "significant_reference_elements": 22552883,
+    "sign_flips_on_significant_elements": 724299,
+    "max_abs_error": 0.097900390625,
+    "reference_l2": 32.30224713140712,
+    "actual_l2": 32.865167826562164,
+    "relative_l2_error": 0.1481362850699597,
+    "cosine_similarity": 0.9893649976938979,
+    "allclose": false,
+    "bitwise_equal": false
+  },
+  "groups": {
+    "classifier": {
+      "elements": 1026,
+      "reference_sq": 187.3183270979789,
+      "actual_sq": 187.35446293198038,
+      "difference_sq": 0.0020622247247956693,
+      "dot": 187.33536390261725,
+      "outside_tolerance": 498,
+      "bitwise_different": 500,
+      "significant_reference_elements": 1022,
+      "sign_flips_on_significant_elements": 0,
+      "max_abs_error": 0.0078125,
+      "reference_l2": 13.686428573516865,
+      "actual_l2": 13.687748643658693,
+      "relative_l2_error": 0.003318011290246247,
+      "cosine_similarity": 0.999994500582364,
+      "allclose": false,
+      "bitwise_equal": false
+    },
+    "mil_head": {
+      "elements": 131456,
+      "reference_sq": 5.0600438410415044e-05,
+      "actual_sq": 5.207703578372058e-05,
+      "difference_sq": 5.331301597905219e-07,
+      "dot": 5.107217201717255e-05,
+      "outside_tolerance": 107,
+      "bitwise_different": 127430,
+      "significant_reference_elements": 17414,
+      "sign_flips_on_significant_elements": 1,
+      "max_abs_error": 6.4849853515625e-05,
+      "reference_l2": 0.007113398513398152,
+      "actual_l2": 0.0072164420446450325,
+      "relative_l2_error": 0.10264539872171594,
+      "cosine_similarity": 0.9949106049442619,
+      "allclose": false,
+      "bitwise_equal": false
+    },
+    "pos2weight": {
+      "elements": 445120,
+      "reference_sq": 0.8448193299398356,
+      "actual_sq": 0.8446195538685131,
+      "difference_sq": 5.05976251713058e-06,
+      "dot": 0.8447169120229159,
+      "outside_tolerance": 1499,
+      "bitwise_different": 223783,
+      "significant_reference_elements": 264271,
+      "sign_flips_on_significant_elements": 0,
+      "max_abs_error": 0.0001220703125,
+      "reference_l2": 0.9191405387316107,
+      "actual_l2": 0.9190318568300628,
+      "relative_l2_error": 0.002447277095751533,
+      "cosine_similarity": 0.9999970120548042,
+      "allclose": false,
+      "bitwise_equal": false
+    },
+    "rdn": {
+      "elements": 21973976,
+      "reference_sq": 44.81644077498103,
+      "actual_sq": 48.91616749568985,
+      "difference_sq": 1.632066567617664,
+      "dot": 46.05027085152662,
+      "outside_tolerance": 8348302,
+      "bitwise_different": 20572451,
+      "significant_reference_elements": 11837486,
+      "sign_flips_on_significant_elements": 530950,
+      "max_abs_error": 0.0771484375,
+      "reference_l2": 6.694508254904242,
+      "actual_l2": 6.99400940060062,
+      "relative_l2_error": 0.1908315829656549,
+      "cosine_similarity": 0.9835292850761624,
+      "allclose": false,
+      "bitwise_equal": false
+    },
+    "region_encoder": {
+      "elements": 11367808,
+      "reference_sq": 810.4555319351616,
+      "actual_sq": 843.0039542095225,
+      "difference_sq": 21.263381525077044,
+      "dot": 816.098052309804,
+      "outside_tolerance": 7362155,
+      "bitwise_different": 10934004,
+      "significant_reference_elements": 10432690,
+      "sign_flips_on_significant_elements": 193348,
+      "max_abs_error": 0.097900390625,
+      "reference_l2": 28.468500697001268,
+      "actual_l2": 29.03453037694122,
+      "relative_l2_error": 0.1619763358625519,
+      "cosine_similarity": 0.9873313794524252,
+      "allclose": false,
+      "bitwise_equal": false
+    }
+  },
+  "full_vs_full_repeat": {
+    "elements": 33919386,
+    "reference_sq": 1043.4351697384998,
+    "actual_sq": 1043.4351697384998,
+    "difference_sq": 0.0,
+    "dot": 1043.4351697384989,
+    "outside_tolerance": 0,
+    "bitwise_different": 0,
+    "significant_reference_elements": 22552883,
+    "sign_flips_on_significant_elements": 0,
+    "max_abs_error": 0.0,
+    "reference_l2": 32.30224713140712,
+    "actual_l2": 32.30224713140712,
+    "relative_l2_error": 0.0,
+    "cosine_similarity": 0.9999999999999991,
+    "allclose": true,
+    "bitwise_equal": true
+  },
+  "parameter_tensors_outside_tolerance": 367,
+  "negative_control": {
+    "parameter": "sr.sub_mean.weight",
+    "self_comparison_exact": true,
+    "doubling_gradient_detected": true
+  },
+  "runs": [
+    {
+      "mode": "full",
+      "max_memory_allocated": 1954240512,
+      "max_memory_reserved": 2585788416,
+      "elapsed_seconds": 46.79517919999989,
+      "tf32": {
+        "matmul": false,
+        "cudnn": true
+      }
+    },
+    {
+      "mode": "micro1",
+      "max_memory_allocated": 1498485248,
+      "max_memory_reserved": 1897922560,
+      "elapsed_seconds": 44.9171237999999,
+      "tf32": {
+        "matmul": false,
+        "cudnn": true
+      }
+    }
+  ],
+  "status": "comparison_complete",
+  "strict_tolerance_passed": false
+}
+SAVED reports\real_n2_batch_compare_20260930\bf16_comparison.json

@@ -1,0 +1,24 @@
+{
+  "source_matches_official_except_import": true,
+  "trainer_source_identical": true,
+  "device": "cpu",
+  "dtype": "float32",
+  "scale": 32,
+  "feature_shape": [
+    2,
+    64,
+    2,
+    3
+  ],
+  "output_shape": [
+    2,
+    3,
+    64,
+    96
+  ],
+  "position_max_abs_error": 0.0,
+  "forward_max_abs_error": 5.7220458984375e-06,
+  "feature_gradient_max_abs_error": 1.043081283569336e-07,
+  "parameter_gradient_max_abs_error": 1.1920928955078125e-06,
+  "passed": true
+}

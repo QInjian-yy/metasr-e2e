@@ -1,0 +1,28 @@
+test_groupnorm_train_output_independent_of_region_batching (test_engine.EngineTests) ... ok
+test_hr_crop_coordinate_and_memmap_output (test_engine.EngineTests) ... ok
+test_shared_feature_once_and_region_weighted_loss (test_engine.EngineTests) ... ok
+test_training_update_and_evaluation_sr_off (test_engine.EngineTests) ... ok
+test_abmil_joint_backward_and_sr_off (test_metasr.MetaSRTests) ... ok
+test_chunk_size_and_boundary_crops (test_metasr.MetaSRTests) ... ok
+test_official_architecture (test_metasr.MetaSRTests) ... ok
+test_official_forward_checkpoint_and_small_scale_equivalence (test_metasr.MetaSRTests) ... ok
+EQUIVALENCE {'device': 'cpu', 'dtype': 'float32', 'official_config': 'RDN-B/G0=64/D=16/C=8/G=64', 'upsampling': [{'scale': 2, 'shape': [1, 3, 8, 10], 'forward_max_abs_error': 2.384185791015625e-06, 'parameter_gradient_max_abs_error': 3.5762786865234375e-07}, {'scale': 3, 'shape': [1, 3, 12, 15], 'forward_max_abs_error': 1.9073486328125e-06, 'parameter_gradient_max_abs_error': 4.76837158203125e-07}, {'scale': 4, 'shape': [1, 3, 16, 20], 'forward_max_abs_error': 2.86102294921875e-06, 'parameter_gradient_max_abs_error': 2.384185791015625e-07}], 'checkpoint': {'feature_shape': [1, 64, 4, 5], 'eval_with_grad_enabled': True, 'forward_max_abs_error': 0.0, 'input_gradient_max_abs_error': 0.0, 'parameter_gradient_max_abs_error': 0.0}, 'passed': True}
+test_scale32_n1_n6_sr_forward_backward_and_streaming (test_metasr.MetaSRTests) ... ok
+CROP {'forward_error': 7.152557373046875e-06, 'gradient_error': 2.384185791015625e-06}
+test_unaligned_crop_and_decoder_gradients (test_metasr.MetaSRTests) ... ok
+test_all_regions_grouped_by_slide_and_split_by_case (test_wsi_data.WSIDataTests) ... ok
+test_ambiguous_label_file_requires_explicit_selection (test_wsi_data.WSIDataTests) ... ok
+test_available_folds_auto_discovered (test_wsi_data.WSIDataTests) ... ok
+test_duplicate_region_rejected (test_wsi_data.WSIDataTests) ... ok
+test_load_images_rgb_float32_strict_size (test_wsi_data.WSIDataTests) ... ok
+test_manifest_split_column_ignored (test_wsi_data.WSIDataTests) ... ok
+test_missing_and_invalid_label_rejected (test_wsi_data.WSIDataTests) ... ok
+test_missing_region_fails_instead_of_reducing_wsi (test_wsi_data.WSIDataTests) ... ok
+test_sr_off_does_not_require_hr_files (test_wsi_data.WSIDataTests) ... ok
+test_train_val_overlap_rejected (test_wsi_data.WSIDataTests) ... ok
+test_unknown_case_and_omitted_case_rejected (test_wsi_data.WSIDataTests) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 7.709s
+
+OK

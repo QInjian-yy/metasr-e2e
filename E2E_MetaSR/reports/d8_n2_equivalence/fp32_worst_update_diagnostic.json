@@ -1,0 +1,36 @@
+{
+  "parameter": "sr.RDBs.3.convs.2.conv.0.weight",
+  "flat_index": 97602,
+  "initial_parameter": 0.0072855036705732346,
+  "weight_decay_contribution": 7.285503670573235e-07,
+  "optimizer": {
+    "lr": 1e-05,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08
+  },
+  "runs": {
+    "full": {
+      "raw_gradient": -7.279450073838234e-07,
+      "effective_gradient_from_adam_first_moment": 6.053412632267553e-10,
+      "adam_exp_avg": 6.053412632267552e-11,
+      "adam_exp_avg_sq": 3.664380831093111e-22,
+      "post_parameter": 0.007284932769834995,
+      "actual_update": -5.709007382392883e-07,
+      "update_from_recorded_adam_state": -5.70789045259087e-07
+    },
+    "micro1": {
+      "raw_gradient": -7.203198038041592e-07,
+      "effective_gradient_from_adam_first_moment": 8.230545134324531e-09,
+      "adam_exp_avg": 8.23054513432453e-10,
+      "adam_exp_avg_sq": 6.774187225449924e-20,
+      "post_parameter": 0.007280989084392786,
+      "actual_update": -4.514586180448532e-06,
+      "update_from_recorded_adam_state": -4.514700520382917e-06
+    }
+  },
+  "explanation": "Near-cancellation of raw gradient and weight decay makes the effective gradient comparable to Adam eps; small raw-gradient differences can produce a larger relative step difference."
+}

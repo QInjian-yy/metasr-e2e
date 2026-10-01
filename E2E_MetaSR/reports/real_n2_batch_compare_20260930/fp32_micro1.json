@@ -1,0 +1,101 @@
+{
+  "n": 2,
+  "size": 256,
+  "use_region_microbatch": true,
+  "micro_batch_size": 1,
+  "precision": "fp32",
+  "lambda_sr": 0.1,
+  "sr_crop": 256,
+  "mode": "joint",
+  "data_root": "D:\\ddata",
+  "slide_id": "normal_001",
+  "gradient_output": "reports\\real_n2_batch_compare_20260930\\fp32_micro1_gradients.pt",
+  "output": "reports\\real_n2_batch_compare_20260930\\fp32_micro1.json",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_bytes": 6441926656,
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "checkpoint_rdb": true,
+  "normalization": "GroupNorm",
+  "input_shape": [
+    2,
+    3,
+    256,
+    256
+  ],
+  "synthetic": false,
+  "includes_adam_step": true,
+  "lr_chunk_size": 256,
+  "effective_region_batch_size": 1,
+  "training_stages": {
+    "forward": true,
+    "backward": true,
+    "optimizer_step": true
+  },
+  "tf32": {
+    "matmul": false,
+    "cudnn": false
+  },
+  "sample": {
+    "slide_id": "normal_001",
+    "n_regions": 2,
+    "label": 0,
+    "lr_paths": [
+      "D:\\ddata\\images_256\\normal_001_31168_86336.jpg",
+      "D:\\ddata\\images_256\\normal_001_57152_100032.jpg"
+    ],
+    "hr_paths": [
+      "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg",
+      "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+    ],
+    "manifest_n_regions": 2
+  },
+  "initial_state_sha256": "44a6c7beafe2ab714fbb597b0a434721f4c7f7f95199cbc1531891911374ab34",
+  "allocated_before_step": 136048640,
+  "reserved_before_step": 159383552,
+  "hr_crops": [
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg"
+      ],
+      "box_y_x_h_w": [
+        4116,
+        1603,
+        256,
+        256
+      ]
+    },
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+      ],
+      "box_y_x_h_w": [
+        5702,
+        7172,
+        256,
+        256
+      ]
+    }
+  ],
+  "loss_total": 0.5728664994239807,
+  "loss_cls": 0.4925444424152374,
+  "loss_sr": 0.8032205700874329,
+  "logits": [
+    [
+      -0.12247461080551147,
+      -0.5742851495742798
+    ]
+  ],
+  "gradient_l2": {
+    "rdn": 7.257479667663574,
+    "resnet18_gn": 29.377229690551758,
+    "abmil": 0.007006150670349598,
+    "classifier": 13.698389053344727,
+    "pos2weight": 0.9137239456176758
+  },
+  "gradients_finite": true,
+  "status": "passed",
+  "max_memory_allocated": 2882302976,
+  "max_memory_reserved": 3651141632,
+  "elapsed_seconds": 84.45947419999993
+}

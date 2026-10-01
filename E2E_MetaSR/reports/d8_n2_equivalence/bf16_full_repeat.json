@@ -1,0 +1,147 @@
+{
+  "config": "configs\\rdn_d8.yaml",
+  "n": 2,
+  "size": 256,
+  "use_region_microbatch": false,
+  "micro_batch_size": 1,
+  "precision": "bf16",
+  "lambda_sr": 0.1,
+  "sr_crop": 256,
+  "mode": "joint",
+  "data_root": "D:\\ddata",
+  "slide_id": "normal_001",
+  "gradient_output": "reports\\d8_n2_equivalence\\bf16_full_repeat_gradients.pt",
+  "training_state_output": "reports\\d8_n2_equivalence\\bf16_full_repeat_state.pt",
+  "output": "reports\\d8_n2_equivalence\\bf16_full_repeat.json",
+  "model_config": {
+    "scale": 32,
+    "lr_chunk_size": 256,
+    "checkpoint_rdb": true,
+    "rgb_range": 1,
+    "rdn_blocks": 8
+  },
+  "seed": 1,
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_bytes": 6441926656,
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "checkpoint_rdb": true,
+  "normalization": "GroupNorm",
+  "input_shape": [
+    2,
+    3,
+    256,
+    256
+  ],
+  "synthetic": false,
+  "includes_adam_step": true,
+  "lr_chunk_size": 256,
+  "effective_region_batch_size": 2,
+  "training_stages": {
+    "forward": true,
+    "backward": true,
+    "optimizer_step": true
+  },
+  "tf32": {
+    "matmul": false,
+    "cudnn": true
+  },
+  "sample": {
+    "slide_id": "normal_001",
+    "n_regions": 2,
+    "label": 0,
+    "lr_paths": [
+      "D:\\ddata\\images_256\\normal_001_31168_86336.jpg",
+      "D:\\ddata\\images_256\\normal_001_57152_100032.jpg"
+    ],
+    "hr_paths": [
+      "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg",
+      "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+    ],
+    "manifest_n_regions": 2
+  },
+  "parameter_counts": {
+    "rdn_encoder": 11024832,
+    "metasr_total": 11469976,
+    "e2e_total": 22970266
+  },
+  "initial_state_sha256": "f60161eef8a0a3d2453e7b93a8f91bb6f7d910f11a9f917d84d3ad48f0b054c4",
+  "encoder_inputs": [
+    {
+      "shape": [
+        2,
+        64,
+        256,
+        256
+      ],
+      "requires_grad": true,
+      "has_grad_fn": true
+    }
+  ],
+  "mil_inputs": [
+    {
+      "shape": [
+        2,
+        512
+      ],
+      "requires_grad": true,
+      "has_grad_fn": true
+    }
+  ],
+  "optimizer": {
+    "lr": 1e-05,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08
+  },
+  "allocated_before_step": 91906048,
+  "reserved_before_step": 104857600,
+  "hr_crops": [
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg"
+      ],
+      "box_y_x_h_w": [
+        7700,
+        6701,
+        256,
+        256
+      ]
+    },
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+      ],
+      "box_y_x_h_w": [
+        5804,
+        3659,
+        256,
+        256
+      ]
+    }
+  ],
+  "loss_total": 1.0590014457702637,
+  "loss_cls": 0.97265625,
+  "loss_sr": 0.8634517192840576,
+  "logits": [
+    [
+      0.1669921875,
+      0.6640625
+    ]
+  ],
+  "gradient_l2": {
+    "rdn": 3.9477853775024414,
+    "resnet18_gn": 29.205703735351562,
+    "abmil": 0.021652253344655037,
+    "classifier": 20.93221092224121,
+    "pos2weight": 1.4498167037963867
+  },
+  "gradients_finite": true,
+  "status": "passed",
+  "max_memory_allocated": 1640876032,
+  "max_memory_reserved": 1954545664,
+  "elapsed_seconds": 6.642763800002285
+}

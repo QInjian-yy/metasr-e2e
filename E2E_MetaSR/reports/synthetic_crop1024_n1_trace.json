@@ -1,0 +1,649 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_bytes": 6441926656,
+  "config": {
+    "metasr": {
+      "scale": 32,
+      "lr_chunk_size": 256,
+      "checkpoint_rdb": true,
+      "rgb_range": 1
+    },
+    "lambda_sr": 0.1,
+    "sr_train_crop": 1024,
+    "training": {
+      "use_region_microbatch": false,
+      "region_microbatch_size": 1
+    },
+    "precision": "bf16",
+    "lr": 1e-05,
+    "weight_decay": 0.0001,
+    "epochs": 20,
+    "early_stopping_patience": 5,
+    "seed": 1
+  },
+  "synthetic": true,
+  "input_note": "Independent random LR and HR; tests computation, not reconstruction quality.",
+  "shapes": {
+    "LR_CPU": {
+      "shape": [
+        1,
+        3,
+        256,
+        256
+      ],
+      "dtype": "torch.float32",
+      "device": "cpu",
+      "requires_grad": false
+    },
+    "HR_CPU": {
+      "shape": [
+        1,
+        3,
+        8192,
+        8192
+      ],
+      "dtype": "torch.uint8",
+      "device": "cpu",
+      "requires_grad": false
+    },
+    "sub_mean.input": {
+      "shape": [
+        1,
+        3,
+        256,
+        256
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": false
+    },
+    "sub_mean.output0": {
+      "shape": [
+        1,
+        3,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "SFENet1.input": {
+      "shape": [
+        1,
+        3,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "SFENet1.output0": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "SFENet2.input": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "SFENet2.output0": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "RDB1.input": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "RDB1.output0": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "RDB16.input": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "RDB16.output0": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "GFF.input": {
+      "shape": [
+        1,
+        1024,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "GFF.output0": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.conv1.input": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.conv1.output0": {
+      "shape": [
+        1,
+        64,
+        128,
+        128
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.bn1.input": {
+      "shape": [
+        1,
+        64,
+        128,
+        128
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.bn1.output0": {
+      "shape": [
+        1,
+        64,
+        128,
+        128
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.maxpool.input": {
+      "shape": [
+        1,
+        64,
+        128,
+        128
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.maxpool.output0": {
+      "shape": [
+        1,
+        64,
+        64,
+        64
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.layer1.input": {
+      "shape": [
+        1,
+        64,
+        64,
+        64
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.layer1.output0": {
+      "shape": [
+        1,
+        64,
+        64,
+        64
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.layer2.input": {
+      "shape": [
+        1,
+        64,
+        64,
+        64
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.layer2.output0": {
+      "shape": [
+        1,
+        128,
+        32,
+        32
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.layer3.input": {
+      "shape": [
+        1,
+        128,
+        32,
+        32
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.layer3.output0": {
+      "shape": [
+        1,
+        256,
+        16,
+        16
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.layer4.input": {
+      "shape": [
+        1,
+        256,
+        16,
+        16
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.layer4.output0": {
+      "shape": [
+        1,
+        512,
+        8,
+        8
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.avgpool.input": {
+      "shape": [
+        1,
+        512,
+        8,
+        8
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.avgpool.output0": {
+      "shape": [
+        1,
+        512,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.fc.input": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet.fc.output0": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet18_GN.input": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ResNet18_GN.output0": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "GT_crop_CPU": {
+      "shape": [
+        1,
+        3,
+        1024,
+        1024
+      ],
+      "dtype": "torch.float32",
+      "device": "cpu",
+      "requires_grad": false
+    },
+    "shared_feature": {
+      "shape": [
+        1,
+        64,
+        256,
+        256
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "unfold": {
+      "shape": [
+        1,
+        576,
+        65536
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "Pos2Weight.input": {
+      "shape": [
+        1024,
+        3
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": false
+    },
+    "Pos2Weight.output0": {
+      "shape": [
+        1024,
+        1728
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "first_chunk.patches": {
+      "shape": [
+        1,
+        1,
+        576
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "first_chunk.kernel": {
+      "shape": [
+        576,
+        2016
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "first_chunk.matmul": {
+      "shape": [
+        1,
+        1,
+        2016
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "SR_prediction": {
+      "shape": [
+        1,
+        3,
+        1024,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL_V.input": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL_V.output0": {
+      "shape": [
+        1,
+        128
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL_U.input": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL_U.output0": {
+      "shape": [
+        1,
+        128
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL_w.input": {
+      "shape": [
+        1,
+        128
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL_w.output0": {
+      "shape": [
+        1,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL.input": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL.output0": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "ABMIL.output1": {
+      "shape": [
+        1
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "classifier.input": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "classifier.output0": {
+      "shape": [
+        1,
+        2
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "logits": {
+      "shape": [
+        1,
+        2
+      ],
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "loss_total": {
+      "shape": [],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "loss_cls": {
+      "shape": [],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    },
+    "loss_sr": {
+      "shape": [],
+      "dtype": "torch.float32",
+      "device": "cuda:0",
+      "requires_grad": true
+    }
+  },
+  "stages": {
+    "forward": true,
+    "backward": true,
+    "optimizer_step": true
+  },
+  "normalization": {
+    "GroupNorm": 20,
+    "BatchNorm2d": 0
+  },
+  "hr_box_y_x_h_w": [
+    6656,
+    6891,
+    1024,
+    1024
+  ],
+  "decoder_matmul_calls": 96,
+  "loss_total": 0.5851288437843323,
+  "loss_cls": 0.4921875,
+  "loss_sr": 0.9294133186340332,
+  "gradient_l2": {
+    "MetaRDN.SFENet1": 0.8249859809875488,
+    "ResNet.conv1": 9.649707794189453,
+    "ABMIL.attention_V": 0.0,
+    "classifier": 13.2171630859375,
+    "Pos2Weight.output": 0.509434163570404
+  },
+  "attention_note": "N=1 softmax is identically 1; zero attention gradient is expected.",
+  "parameter_update_max_abs": {
+    "MetaRDN.SFENet1": 1.0000541806221008e-05,
+    "ResNet.conv1": 1.0000541806221008e-05,
+    "ABMIL.attention_V": 9.976327419281006e-06,
+    "classifier": 1.0000541806221008e-05,
+    "Pos2Weight.output": 1.0000541806221008e-05
+  },
+  "status": "passed",
+  "elapsed_seconds": 7.998970100000406,
+  "max_memory_allocated": 1388915712,
+  "max_memory_reserved": 1841299456
+}

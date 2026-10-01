@@ -1,0 +1,40 @@
+{
+  "copies": {
+    "Meta-SR-Pytorch-0.4.0/model/metardn.py": "vendor/official/metardn.py",
+    "Meta-SR-Pytorch-0.4.0/model/common.py": "vendor/official/common.py",
+    "Meta-SR-Pytorch-0.4.0/trainer.py": "reference/trainer.py",
+    "Meta-SR-Pytorch-0.4.0/option.py": "reference/option.py",
+    "Meta-SR-Pytorch-0.4.0/README.md": "reference/Meta-SR-README.md",
+    "E2E/wsi_data.py": "wsi_data.py",
+    "E2E/augmentation.py": "augmentation.py",
+    "E2E/tests/test_wsi_data.py": "tests/test_wsi_data.py",
+    "E2E/downstream_train/camelyon16_labels.csv": "downstream_train/camelyon16_labels.csv",
+    "E2E/downstream_train/splits_0.csv": "downstream_train/splits_0.csv",
+    "E2E/downstream_train/splits_1.csv": "downstream_train/splits_1.csv",
+    "E2E/downstream_train/splits_2.csv": "downstream_train/splits_2.csv",
+    "E2E/manifests/patch_manifest.csv": "manifests/patch_manifest.csv",
+    "E2E/manifests/slide_manifest.csv": "manifests/slide_manifest.csv"
+  },
+  "changes": {
+    "vendor/official/metardn.py": "Only from model import common -> from . import common",
+    "models/abmil.py": "GatedAttentionMIL class extracted verbatim from E2E/downstream/attention_resnet/model.py",
+    "wsi_data.py": "Added require_hr=True keyword; only file existence check is optional when SR is off.",
+    "models/baseline.py": "ResNet18 64-channel construction, GroupNorm conversion helper and classifier copied from E2E; GroupNorm enabled by user follow-up."
+  },
+  "original_sha256": {
+    "Meta-SR-Pytorch-0.4.0/model/metardn.py": "19228a120bdffc1075ca86db8d1ed950524de530dc1fe59f5de6cf2d14fa3736",
+    "Meta-SR-Pytorch-0.4.0/model/common.py": "f0e8abc1816ac346c76ac85efcc6eea7676189a041be3c79d60118eae30f1127",
+    "Meta-SR-Pytorch-0.4.0/trainer.py": "a636c7a5c10f2dff0783abfc6bfdbac1b138c2bff58b68c00f2156c6c7a53793",
+    "Meta-SR-Pytorch-0.4.0/option.py": "4ee33ca1b3d67a58a12be847d697c004c8040167e9c986b6434080c861b5037e",
+    "Meta-SR-Pytorch-0.4.0/README.md": "3427fea3e1cf80bedaffbe991eed952ac0d86d4e09f9ac8e2a827c8c0e3a39ba",
+    "E2E/wsi_data.py": "03a9f96301c067fb5d868876985c77de8369d0adb7f53e317188139d17126809",
+    "E2E/augmentation.py": "5233e64a4792bfc11795485478076ddfe2a627abd18428071b380364a17f78e5",
+    "E2E/tests/test_wsi_data.py": "2ff50aa384ee990cca075296d23747b09eb4cb0f83fecec4431e749edcf7004d",
+    "E2E/downstream_train/camelyon16_labels.csv": "840b70f00fc237608196f12b89489fe6cfcedcf1d90ca772834da66bc366f906",
+    "E2E/downstream_train/splits_0.csv": "a1b177c62c3e271658ecf5d111cf7764eff475e632899a9ec1e9b48bcc0f32d8",
+    "E2E/downstream_train/splits_1.csv": "84e975ccb36233b346cb5fe22f83d36160001d4b54be914d2a1d943164def712",
+    "E2E/downstream_train/splits_2.csv": "6c60f46a4cf8b0ef566c0ecb06a6e859357c3f589889908913e34c46646049f5",
+    "E2E/manifests/patch_manifest.csv": "0d6d32dab0853918c66a3fa5aee182d25265d56a3065cfcd81ba9b6db102763b",
+    "E2E/manifests/slide_manifest.csv": "ee2d4d1d4c73ff9fd0bcaaefecdb2d3f3d018eb59ad0fb6ceb0965916dbd11c4"
+  }
+}

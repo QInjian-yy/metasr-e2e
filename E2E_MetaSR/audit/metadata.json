@@ -1,0 +1,195 @@
+{
+  "real_metadata": true,
+  "images_decoded": 0,
+  "slides": 262,
+  "regions": 2788,
+  "label_counts": {
+    "0": 151,
+    "1": 111
+  },
+  "region_count_distribution": {
+    "1": 12,
+    "2": 14,
+    "3": 12,
+    "4": 14,
+    "5": 18,
+    "6": 17,
+    "7": 17,
+    "8": 13,
+    "9": 12,
+    "10": 10,
+    "11": 8,
+    "12": 15,
+    "13": 15,
+    "14": 13,
+    "15": 11,
+    "16": 14,
+    "17": 6,
+    "18": 9,
+    "19": 7,
+    "20": 8,
+    "22": 6,
+    "23": 1,
+    "24": 2,
+    "26": 2,
+    "27": 1,
+    "28": 1,
+    "29": 1,
+    "31": 1,
+    "35": 1,
+    "37": 1
+  },
+  "prefix_label_errors": [],
+  "coordinate_filename_errors": [],
+  "copied_metadata_identical_to_E2E": {
+    "manifests/patch_manifest.csv": true,
+    "manifests/slide_manifest.csv": true,
+    "downstream_train/camelyon16_labels.csv": true,
+    "downstream_train/splits_0.csv": true,
+    "downstream_train/splits_1.csv": true,
+    "downstream_train/splits_2.csv": true
+  },
+  "image_directories": {
+    "D:\\sdx_model\\E2E_MetaSR\\images_256": false,
+    "D:\\sdx_model\\E2E_MetaSR\\images_8192": false,
+    "D:\\sdx_model\\E2E\\images_256": false,
+    "D:\\sdx_model\\E2E\\images_8192": false
+  },
+  "folds": [
+    {
+      "fold": 0,
+      "train_slides": 174,
+      "val_slides": 88,
+      "case_overlap": [],
+      "metadata_only_dry_run": [
+        {
+          "slide_id": "normal_006",
+          "case_id": "normal_006",
+          "label": 0,
+          "n_regions": 1,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\normal_006_53376_23040.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\normal_006_53376_23040.jpg",
+          "last_filename": "normal_006_53376_23040.jpg"
+        },
+        {
+          "slide_id": "normal_111",
+          "case_id": "normal_111",
+          "label": 0,
+          "n_regions": 31,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\normal_111_111488_16384.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\normal_111_111488_16384.jpg",
+          "last_filename": "normal_111_95104_81920.jpg"
+        },
+        {
+          "slide_id": "tumor_019",
+          "case_id": "tumor_019",
+          "label": 1,
+          "n_regions": 2,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\tumor_019_49024_68928.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\tumor_019_49024_68928.jpg",
+          "last_filename": "tumor_019_49024_85312.jpg"
+        },
+        {
+          "slide_id": "tumor_102",
+          "case_id": "tumor_102",
+          "label": 1,
+          "n_regions": 35,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\tumor_102_117824_21312.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\tumor_102_117824_21312.jpg",
+          "last_filename": "tumor_102_71808_55424.jpg"
+        }
+      ]
+    },
+    {
+      "fold": 1,
+      "train_slides": 175,
+      "val_slides": 87,
+      "case_overlap": [],
+      "metadata_only_dry_run": [
+        {
+          "slide_id": "normal_004",
+          "case_id": "normal_004",
+          "label": 0,
+          "n_regions": 1,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\normal_004_19200_65600.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\normal_004_19200_65600.jpg",
+          "last_filename": "normal_004_19200_65600.jpg"
+        },
+        {
+          "slide_id": "normal_091",
+          "case_id": "normal_091",
+          "label": 0,
+          "n_regions": 28,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\normal_091_17408_101952.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\normal_091_17408_101952.jpg",
+          "last_filename": "normal_091_85376_132864.jpg"
+        },
+        {
+          "slide_id": "tumor_038",
+          "case_id": "tumor_038",
+          "label": 1,
+          "n_regions": 2,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\tumor_038_25792_131904.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\tumor_038_25792_131904.jpg",
+          "last_filename": "tumor_038_40640_156480.jpg"
+        },
+        {
+          "slide_id": "tumor_092",
+          "case_id": "tumor_092",
+          "label": 1,
+          "n_regions": 37,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\tumor_092_108672_38016.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\tumor_092_108672_38016.jpg",
+          "last_filename": "tumor_092_97408_55360.jpg"
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "train_slides": 175,
+      "val_slides": 87,
+      "case_overlap": [],
+      "metadata_only_dry_run": [
+        {
+          "slide_id": "normal_004",
+          "case_id": "normal_004",
+          "label": 0,
+          "n_regions": 1,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\normal_004_19200_65600.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\normal_004_19200_65600.jpg",
+          "last_filename": "normal_004_19200_65600.jpg"
+        },
+        {
+          "slide_id": "normal_111",
+          "case_id": "normal_111",
+          "label": 0,
+          "n_regions": 31,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\normal_111_111488_16384.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\normal_111_111488_16384.jpg",
+          "last_filename": "normal_111_95104_81920.jpg"
+        },
+        {
+          "slide_id": "tumor_019",
+          "case_id": "tumor_019",
+          "label": 1,
+          "n_regions": 2,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\tumor_019_49024_68928.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\tumor_019_49024_68928.jpg",
+          "last_filename": "tumor_019_49024_85312.jpg"
+        },
+        {
+          "slide_id": "tumor_092",
+          "case_id": "tumor_092",
+          "label": 1,
+          "n_regions": 37,
+          "first_lr": "D:\\sdx_model\\E2E_MetaSR\\images_256\\tumor_092_108672_38016.jpg",
+          "first_hr": "D:\\sdx_model\\E2E_MetaSR\\images_8192\\tumor_092_108672_38016.jpg",
+          "last_filename": "tumor_092_97408_55360.jpg"
+        }
+      ]
+    }
+  ],
+  "unmodified_loader": "Missing region file for WSI normal_002 (all 2 regions required): D:\\sdx_model\\E2E_MetaSR\\images_256\\normal_002_51264_139200.jpg",
+  "pair_identity_and_order_passed": true,
+  "pixel_content_and_image_pair_alignment_verified": false
+}

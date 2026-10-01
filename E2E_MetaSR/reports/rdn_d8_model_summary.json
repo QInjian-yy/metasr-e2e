@@ -1,0 +1,83 @@
+{
+  "scope": "CPU model construction and parameter inventory only; no forward/backward/training executed",
+  "models": {
+    "baseline": {
+      "config": {
+        "metasr": {
+          "scale": 32,
+          "lr_chunk_size": 256,
+          "checkpoint_rdb": true,
+          "rgb_range": 1,
+          "rdn_blocks": 16
+        },
+        "lambda_sr": 0.1,
+        "sr_train_crop": 256,
+        "training": {
+          "use_region_microbatch": false,
+          "region_microbatch_size": 1
+        },
+        "precision": "bf16",
+        "lr": 1e-05,
+        "weight_decay": 0.0001,
+        "epochs": 20,
+        "early_stopping_patience": 5,
+        "seed": 1
+      },
+      "rdn_blocks": 16,
+      "registered_rdbs": 16,
+      "convs_per_rdb": 8,
+      "gff_input_channels": 1024,
+      "gff_output_channels": 64,
+      "resnet_input_channels": 64,
+      "p2w_output_features": 1728,
+      "parameter_counts": {
+        "rdn_encoder": 21973952,
+        "metasr_total": 22419096,
+        "e2e_total": 33919386
+      },
+      "seed7_state_sha256": "44a6c7beafe2ab714fbb597b0a434721f4c7f7f95199cbc1531891911374ab34"
+    },
+    "rdn_d8": {
+      "config": {
+        "metasr": {
+          "scale": 32,
+          "lr_chunk_size": 256,
+          "checkpoint_rdb": true,
+          "rgb_range": 1,
+          "rdn_blocks": 8
+        },
+        "lambda_sr": 0.1,
+        "sr_train_crop": 256,
+        "training": {
+          "use_region_microbatch": false,
+          "region_microbatch_size": 1
+        },
+        "precision": "bf16",
+        "lr": 1e-05,
+        "weight_decay": 0.0001,
+        "epochs": 20,
+        "early_stopping_patience": 5,
+        "seed": 1
+      },
+      "rdn_blocks": 8,
+      "registered_rdbs": 8,
+      "convs_per_rdb": 8,
+      "gff_input_channels": 512,
+      "gff_output_channels": 64,
+      "resnet_input_channels": 64,
+      "p2w_output_features": 1728,
+      "parameter_counts": {
+        "rdn_encoder": 11024832,
+        "metasr_total": 11469976,
+        "e2e_total": 22970266
+      },
+      "seed7_state_sha256": "e0ed050d0df0c7d18fe1f35c35f34984efacf01f0cd3937d3163a528d957b5bf"
+    }
+  },
+  "parameter_reduction_percent": {
+    "rdn_encoder": 49.82772329711105,
+    "metasr_total": 48.838365293587216,
+    "e2e_total": 32.27982959361352
+  },
+  "baseline_weights_match_previous_seed7_probe": true
+}

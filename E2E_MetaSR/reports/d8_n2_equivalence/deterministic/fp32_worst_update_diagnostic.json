@@ -1,0 +1,35 @@
+{
+  "parameter": "sr.GFF.0.weight",
+  "flat_index": 1740,
+  "initial_parameter": 0.021303441375494003,
+  "weight_decay_contribution": 2.1303441375494005e-06,
+  "optimizer": {
+    "lr": 1e-05,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08
+  },
+  "runs": {
+    "full": {
+      "raw_gradient": -2.1489104256033897e-06,
+      "effective_gradient_from_adam_first_moment": -1.8566341797310315e-08,
+      "adam_exp_avg": -1.8566341797310315e-09,
+      "adam_exp_avg_sq": 3.4470903796466255e-19,
+      "post_parameter": 0.02130994014441967,
+      "actual_update": 6.498768925666809e-06,
+      "update_from_recorded_adam_state": 6.499376819072423e-06
+    },
+    "micro1": {
+      "raw_gradient": -2.1224841475486755e-06,
+      "effective_gradient_from_adam_first_moment": 7.859936035359283e-09,
+      "adam_exp_avg": 7.859936035359283e-10,
+      "adam_exp_avg_sq": 6.177859797163375e-20,
+      "post_parameter": 0.02129903994500637,
+      "actual_update": -4.4014304876327515e-06,
+      "update_from_recorded_adam_state": -4.4008757489645835e-06
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "config": "configs\\rdn_d4.yaml",
+  "n": 2,
+  "size": 256,
+  "use_region_microbatch": false,
+  "micro_batch_size": 1,
+  "precision": "bf16",
+  "lambda_sr": 0.1,
+  "sr_crop": 256,
+  "mode": "joint",
+  "data_root": "D:\\ddata",
+  "slide_id": "normal_001",
+  "gradient_output": null,
+  "training_state_output": null,
+  "deterministic": false,
+  "output": "reports\\real_normal_001_d4_n2_20260930.json",
+  "model_config": {
+    "scale": 32,
+    "lr_chunk_size": 256,
+    "checkpoint_rdb": true,
+    "rgb_range": 1,
+    "rdn_blocks": 4
+  },
+  "seed": 1,
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_bytes": 6441926656,
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "checkpoint_rdb": true,
+  "normalization": "GroupNorm",
+  "input_shape": [
+    2,
+    3,
+    256,
+    256
+  ],
+  "synthetic": false,
+  "includes_adam_step": true,
+  "lr_chunk_size": 256,
+  "effective_region_batch_size": 2,
+  "training_stages": {
+    "forward": true,
+    "backward": true,
+    "optimizer_step": true
+  },
+  "tf32": {
+    "matmul": false,
+    "cudnn": true
+  },
+  "determinism": {
+    "algorithms": false,
+    "cudnn": false,
+    "cublas_workspace_config": null
+  },
+  "sample": {
+    "slide_id": "normal_001",
+    "n_regions": 2,
+    "label": 0,
+    "lr_paths": [
+      "D:\\ddata\\images_256\\normal_001_31168_86336.jpg",
+      "D:\\ddata\\images_256\\normal_001_57152_100032.jpg"
+    ],
+    "hr_paths": [
+      "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg",
+      "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+    ],
+    "manifest_n_regions": 2
+  },
+  "parameter_counts": {
+    "rdn_encoder": 5550272,
+    "metasr_total": 5995416,
+    "e2e_total": 17495706
+  },
+  "optimizer": {
+    "lr": 1e-05,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08
+  },
+  "allocated_before_step": 69998592,
+  "reserved_before_step": 85983232,
+  "hr_crops": [
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg"
+      ],
+      "box_y_x_h_w": [
+        6359,
+        3407,
+        256,
+        256
+      ]
+    },
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+      ],
+      "box_y_x_h_w": [
+        4909,
+        1607,
+        256,
+        256
+      ]
+    }
+  ],
+  "loss_total": 0.33208179473876953,
+  "loss_cls": 0.2470703125,
+  "loss_sr": 0.8501149415969849,
+  "logits": [
+    [
+      0.333984375,
+      -0.9375
+    ]
+  ],
+  "gradient_l2": {
+    "rdn": 2.039731502532959,
+    "resnet18_gn": 11.453932762145996,
+    "abmil": 0.001038386020809412,
+    "classifier": 7.546383380889893,
+    "pos2weight": 1.3859531879425049
+  },
+  "gradients_finite": true,
+  "status": "passed",
+  "max_memory_allocated": 1486151680,
+  "max_memory_reserved": 1746927616,
+  "elapsed_seconds": 3.8967739999970945
+}

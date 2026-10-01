@@ -1,0 +1,71 @@
+{
+  "n": 2,
+  "size": 256,
+  "use_region_microbatch": false,
+  "micro_batch_size": 1,
+  "precision": "bf16",
+  "lambda_sr": 0.1,
+  "sr_crop": 256,
+  "mode": "joint",
+  "data_root": "D:\\ddata",
+  "slide_id": "normal_001",
+  "output": "reports\\real_normal_001_n2_20260930.json",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_bytes": 6441926656,
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "checkpoint_rdb": true,
+  "normalization": "GroupNorm",
+  "input_shape": [
+    2,
+    3,
+    256,
+    256
+  ],
+  "synthetic": false,
+  "includes_adam_step": true,
+  "lr_chunk_size": 256,
+  "effective_region_batch_size": 2,
+  "training_stages": {
+    "forward": true,
+    "backward": true,
+    "optimizer_step": true
+  },
+  "sample": {
+    "slide_id": "normal_001",
+    "n_regions": 2,
+    "label": 0,
+    "lr_paths": [
+      "D:\\ddata\\images_256\\normal_001_31168_86336.jpg",
+      "D:\\ddata\\images_256\\normal_001_57152_100032.jpg"
+    ],
+    "hr_paths": [
+      "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg",
+      "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+    ],
+    "manifest_n_regions": 2
+  },
+  "allocated_before_step": 136048640,
+  "reserved_before_step": 159383552,
+  "loss_total": 0.5727364420890808,
+  "loss_cls": 0.4921875,
+  "loss_sr": 0.8054896593093872,
+  "logits": [
+    [
+      -0.119140625,
+      -0.57421875
+    ]
+  ],
+  "gradient_l2": {
+    "rdn": 6.7573113441467285,
+    "resnet18_gn": 28.468502044677734,
+    "abmil": 0.007113398052752018,
+    "classifier": 13.686427116394043,
+    "pos2weight": 0.9191405177116394
+  },
+  "gradients_finite": true,
+  "status": "passed",
+  "max_memory_allocated": 1954240512,
+  "max_memory_reserved": 2585788416,
+  "elapsed_seconds": 52.29328850000002
+}

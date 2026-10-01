@@ -1,0 +1,43 @@
+{
+  "config": "configs/rdn_d4.yaml",
+  "data_root": "D:\\ddata",
+  "scope": "One real WSI with both regions together; BF16 full region batch; one backward and one first Adam update; two independent SR crops; not an equivalence or convergence test",
+  "only_config_difference_vs_d8": "metasr.rdn_blocks: 8 -> 4",
+  "report": "reports/real_normal_001_d4_n2_20260930.json",
+  "n": 2,
+  "allocated_GiB": 1.3840866088867188,
+  "reserved_GiB": 1.626953125,
+  "elapsed_seconds": 3.8967739999970945,
+  "allocated_reduction_vs_prior_d8_percent": 9.429374857246986,
+  "status": "passed",
+  "parameter_counts": {
+    "rdn_encoder": 5550272,
+    "metasr_total": 5995416,
+    "e2e_total": 17495706
+  },
+  "hr_crops": [
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_31168_86336.jpg"
+      ],
+      "box_y_x_h_w": [
+        6359,
+        3407,
+        256,
+        256
+      ]
+    },
+    {
+      "paths": [
+        "D:\\ddata\\images_8192\\normal_001_57152_100032.jpg"
+      ],
+      "box_y_x_h_w": [
+        4909,
+        1607,
+        256,
+        256
+      ]
+    }
+  ],
+  "comparison_note": "Prior D8 and current D4 use seed 1 but architecture-dependent RNG consumption changes initial weights and crop coordinates. Same real WSI, input shapes, precision and optimizer settings; no matched speed or quality claim."
+}

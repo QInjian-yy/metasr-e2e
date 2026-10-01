@@ -1,0 +1,372 @@
+name,shape,numel,requires_grad,group,optimizer_occurrences
+sr.sub_mean.weight,"[3, 3, 1, 1]",9,True,Meta-RDN/MeanShift,1
+sr.sub_mean.bias,[3],3,True,Meta-RDN/MeanShift,1
+sr.add_mean.weight,"[3, 3, 1, 1]",9,True,Meta-RDN/MeanShift,1
+sr.add_mean.bias,[3],3,True,Meta-RDN/MeanShift,1
+sr.SFENet1.weight,"[64, 3, 3, 3]",1728,True,Meta-RDN/MeanShift,1
+sr.SFENet1.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.SFENet2.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.SFENet2.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.0.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.1.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.2.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.3.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.4.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.5.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.6.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.7.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.8.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.9.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.10.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.11.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.12.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.13.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.14.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.0.conv.0.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.0.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.1.conv.0.weight,"[64, 128, 3, 3]",73728,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.1.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.2.conv.0.weight,"[64, 192, 3, 3]",110592,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.2.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.3.conv.0.weight,"[64, 256, 3, 3]",147456,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.3.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.4.conv.0.weight,"[64, 320, 3, 3]",184320,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.4.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.5.conv.0.weight,"[64, 384, 3, 3]",221184,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.5.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.6.conv.0.weight,"[64, 448, 3, 3]",258048,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.6.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.7.conv.0.weight,"[64, 512, 3, 3]",294912,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.convs.7.conv.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.LFF.weight,"[64, 576, 1, 1]",36864,True,Meta-RDN/MeanShift,1
+sr.RDBs.15.LFF.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.GFF.0.weight,"[64, 1024, 1, 1]",65536,True,Meta-RDN/MeanShift,1
+sr.GFF.0.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.GFF.1.weight,"[64, 64, 3, 3]",36864,True,Meta-RDN/MeanShift,1
+sr.GFF.1.bias,[64],64,True,Meta-RDN/MeanShift,1
+sr.P2W.meta_block.0.weight,"[256, 3]",768,True,Pos2Weight,1
+sr.P2W.meta_block.0.bias,[256],256,True,Pos2Weight,1
+sr.P2W.meta_block.2.weight,"[1728, 256]",442368,True,Pos2Weight,1
+sr.P2W.meta_block.2.bias,[1728],1728,True,Pos2Weight,1
+region_encoder.conv1.weight,"[64, 64, 7, 7]",200704,True,ResNet18,1
+region_encoder.bn1.weight,[64],64,True,ResNet18,1
+region_encoder.bn1.bias,[64],64,True,ResNet18,1
+region_encoder.layer1.0.conv1.weight,"[64, 64, 3, 3]",36864,True,ResNet18,1
+region_encoder.layer1.0.bn1.weight,[64],64,True,ResNet18,1
+region_encoder.layer1.0.bn1.bias,[64],64,True,ResNet18,1
+region_encoder.layer1.0.conv2.weight,"[64, 64, 3, 3]",36864,True,ResNet18,1
+region_encoder.layer1.0.bn2.weight,[64],64,True,ResNet18,1
+region_encoder.layer1.0.bn2.bias,[64],64,True,ResNet18,1
+region_encoder.layer1.1.conv1.weight,"[64, 64, 3, 3]",36864,True,ResNet18,1
+region_encoder.layer1.1.bn1.weight,[64],64,True,ResNet18,1
+region_encoder.layer1.1.bn1.bias,[64],64,True,ResNet18,1
+region_encoder.layer1.1.conv2.weight,"[64, 64, 3, 3]",36864,True,ResNet18,1
+region_encoder.layer1.1.bn2.weight,[64],64,True,ResNet18,1
+region_encoder.layer1.1.bn2.bias,[64],64,True,ResNet18,1
+region_encoder.layer2.0.conv1.weight,"[128, 64, 3, 3]",73728,True,ResNet18,1
+region_encoder.layer2.0.bn1.weight,[128],128,True,ResNet18,1
+region_encoder.layer2.0.bn1.bias,[128],128,True,ResNet18,1
+region_encoder.layer2.0.conv2.weight,"[128, 128, 3, 3]",147456,True,ResNet18,1
+region_encoder.layer2.0.bn2.weight,[128],128,True,ResNet18,1
+region_encoder.layer2.0.bn2.bias,[128],128,True,ResNet18,1
+region_encoder.layer2.0.downsample.0.weight,"[128, 64, 1, 1]",8192,True,ResNet18,1
+region_encoder.layer2.0.downsample.1.weight,[128],128,True,ResNet18,1
+region_encoder.layer2.0.downsample.1.bias,[128],128,True,ResNet18,1
+region_encoder.layer2.1.conv1.weight,"[128, 128, 3, 3]",147456,True,ResNet18,1
+region_encoder.layer2.1.bn1.weight,[128],128,True,ResNet18,1
+region_encoder.layer2.1.bn1.bias,[128],128,True,ResNet18,1
+region_encoder.layer2.1.conv2.weight,"[128, 128, 3, 3]",147456,True,ResNet18,1
+region_encoder.layer2.1.bn2.weight,[128],128,True,ResNet18,1
+region_encoder.layer2.1.bn2.bias,[128],128,True,ResNet18,1
+region_encoder.layer3.0.conv1.weight,"[256, 128, 3, 3]",294912,True,ResNet18,1
+region_encoder.layer3.0.bn1.weight,[256],256,True,ResNet18,1
+region_encoder.layer3.0.bn1.bias,[256],256,True,ResNet18,1
+region_encoder.layer3.0.conv2.weight,"[256, 256, 3, 3]",589824,True,ResNet18,1
+region_encoder.layer3.0.bn2.weight,[256],256,True,ResNet18,1
+region_encoder.layer3.0.bn2.bias,[256],256,True,ResNet18,1
+region_encoder.layer3.0.downsample.0.weight,"[256, 128, 1, 1]",32768,True,ResNet18,1
+region_encoder.layer3.0.downsample.1.weight,[256],256,True,ResNet18,1
+region_encoder.layer3.0.downsample.1.bias,[256],256,True,ResNet18,1
+region_encoder.layer3.1.conv1.weight,"[256, 256, 3, 3]",589824,True,ResNet18,1
+region_encoder.layer3.1.bn1.weight,[256],256,True,ResNet18,1
+region_encoder.layer3.1.bn1.bias,[256],256,True,ResNet18,1
+region_encoder.layer3.1.conv2.weight,"[256, 256, 3, 3]",589824,True,ResNet18,1
+region_encoder.layer3.1.bn2.weight,[256],256,True,ResNet18,1
+region_encoder.layer3.1.bn2.bias,[256],256,True,ResNet18,1
+region_encoder.layer4.0.conv1.weight,"[512, 256, 3, 3]",1179648,True,ResNet18,1
+region_encoder.layer4.0.bn1.weight,[512],512,True,ResNet18,1
+region_encoder.layer4.0.bn1.bias,[512],512,True,ResNet18,1
+region_encoder.layer4.0.conv2.weight,"[512, 512, 3, 3]",2359296,True,ResNet18,1
+region_encoder.layer4.0.bn2.weight,[512],512,True,ResNet18,1
+region_encoder.layer4.0.bn2.bias,[512],512,True,ResNet18,1
+region_encoder.layer4.0.downsample.0.weight,"[512, 256, 1, 1]",131072,True,ResNet18,1
+region_encoder.layer4.0.downsample.1.weight,[512],512,True,ResNet18,1
+region_encoder.layer4.0.downsample.1.bias,[512],512,True,ResNet18,1
+region_encoder.layer4.1.conv1.weight,"[512, 512, 3, 3]",2359296,True,ResNet18,1
+region_encoder.layer4.1.bn1.weight,[512],512,True,ResNet18,1
+region_encoder.layer4.1.bn1.bias,[512],512,True,ResNet18,1
+region_encoder.layer4.1.conv2.weight,"[512, 512, 3, 3]",2359296,True,ResNet18,1
+region_encoder.layer4.1.bn2.weight,[512],512,True,ResNet18,1
+region_encoder.layer4.1.bn2.bias,[512],512,True,ResNet18,1
+classifier.weight,"[2, 512]",1024,True,classifier,1
+classifier.bias,[2],2,True,classifier,1
+mil_head.attention_V.weight,"[128, 512]",65536,True,ABMIL,1
+mil_head.attention_V.bias,[128],128,True,ABMIL,1
+mil_head.attention_U.weight,"[128, 512]",65536,True,ABMIL,1
+mil_head.attention_U.bias,[128],128,True,ABMIL,1
+mil_head.attention_w.weight,"[1, 128]",128,True,ABMIL,1

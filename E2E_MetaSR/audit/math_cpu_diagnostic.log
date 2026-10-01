@@ -1,0 +1,18 @@
+START scale32
+scale32 cpu 2 {'input_shape': [1, 3, 2, 2], 'output_shape': [1, 3, 64, 64], 'output': {'max_abs_error': 7.748603820800781e-07, 'mean_abs_error': 8.469214662909508e-08, 'elements': 12288, 'within_atol_rtol': True}, 'input_gradient': {'max_abs_error': 6.705522537231445e-08, 'mean_abs_error': 3.632158041000366e-08, 'elements': 12, 'within_atol_rtol': True}, 'RDN_gradient': {'max_abs_error': 2.1606683731079102e-07, 'mean_abs_error': 2.125339370591132e-11, 'elements': 21973964, 'tensors': 298, 'none_tensors': 0, 'worst_parameter': 'sub_mean.bias', 'outside_original_tolerance': [], 'relative_l2_error': 2.706243020567125e-07}, 'P2W_gradient': {'max_abs_error': 4.842877388000488e-08, 'mean_abs_error': 2.9193550045650773e-10, 'elements': 445120, 'tensors': 4, 'none_tensors': 0, 'worst_parameter': 'P2W.meta_block.0.weight', 'outside_original_tolerance': [], 'relative_l2_error': 1.2247210244718338e-07}, 'all_parameter_gradients': {'max_abs_error': 2.1606683731079102e-07, 'mean_abs_error': 2.663503530887259e-11, 'elements': 22419096, 'tensors': 304, 'none_tensors': 0, 'worst_parameter': 'sub_mean.bias', 'outside_original_tolerance': [], 'relative_l2_error': 1.7287730161688361e-07}}
+scale32 cpu 4 {'input_shape': [1, 3, 4, 4], 'output_shape': [1, 3, 128, 128], 'output': {'max_abs_error': 1.430511474609375e-06, 'mean_abs_error': 9.96584882765698e-08, 'elements': 49152, 'within_atol_rtol': True}, 'input_gradient': {'max_abs_error': 4.470348358154297e-08, 'mean_abs_error': 1.469743438065052e-08, 'elements': 48, 'within_atol_rtol': True}, 'RDN_gradient': {'max_abs_error': 1.1920928955078125e-07, 'mean_abs_error': 4.411203749249648e-11, 'elements': 21973964, 'tensors': 298, 'none_tensors': 0, 'worst_parameter': 'sub_mean.bias', 'outside_original_tolerance': [], 'relative_l2_error': 2.000737431460199e-07}, 'P2W_gradient': {'max_abs_error': 1.0803341865539551e-07, 'mean_abs_error': 4.4741568727833267e-10, 'elements': 445120, 'tensors': 4, 'none_tensors': 0, 'worst_parameter': 'P2W.meta_block.0.weight', 'outside_original_tolerance': [], 'relative_l2_error': 1.8479369053696748e-07}, 'all_parameter_gradients': {'max_abs_error': 8.344650268554688e-07, 'mean_abs_error': 5.2161239524588195e-11, 'elements': 22419096, 'tensors': 304, 'none_tensors': 0, 'worst_parameter': 'add_mean.bias', 'outside_original_tolerance': [], 'relative_l2_error': 2.2226334461210424e-07}}
+PASS scale32
+START architecture
+PASS architecture
+START crops_boundaries_stream
+PASS crops_boundaries_stream
+START checkpoint_train
+PASS checkpoint_train
+START classification_microbatch
+PASS classification_microbatch
+START branches_optimizer
+PASS branches_optimizer
+START loss_normalization
+PASS loss_normalization
+START microbatch_fp64_diagnostic
+PASS microbatch_fp64_diagnostic

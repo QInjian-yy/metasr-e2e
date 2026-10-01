@@ -1,0 +1,22 @@
+{
+  "n": 6,
+  "mode": "classification-only",
+  "use_region_microbatch": false,
+  "precision": "bf16",
+  "checkpoint_rdb": true,
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_bytes": 6441926656,
+  "status": "manually_interrupted_before_completion",
+  "last_observed_nvidia_smi": {
+    "memory_used_mib": 5926,
+    "memory_total_mib": 6144,
+    "gpu_utilization_percent": 100
+  },
+  "forward_succeeded": null,
+  "backward_succeeded": null,
+  "optimizer_step_succeeded": false,
+  "peak_allocated_bytes": null,
+  "peak_reserved_bytes": null,
+  "elapsed_seconds": null,
+  "reason": "Stopped when WDDM GPU use was near capacity to avoid forcing an OOM."
+}

@@ -1,0 +1,38 @@
+{
+  "n": 6,
+  "size": 256,
+  "micro_batch": 6,
+  "precision": "bf16",
+  "lambda_sr": 0.1,
+  "mode": "joint",
+  "output": "reports\\cuda_n6_batch6_256_bf16.json",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_total_bytes": 6441926656,
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "checkpoint_rdb": true,
+  "normalization": "GroupNorm",
+  "input_shape": [
+    6,
+    3,
+    256,
+    256
+  ],
+  "synthetic": true,
+  "includes_adam_step": true,
+  "sr_crop": 256,
+  "lr_chunk_size": 256,
+  "loss_total": 1.0144402980804443,
+  "loss_cls": 0.9453125,
+  "loss_sr": 0.6912782192230225,
+  "gradient_l2": {
+    "rdn": 1.942298173904419,
+    "resnet18": 24.426776885986328,
+    "abmil": 0.007541302591562271,
+    "p2w": 0.28679364919662476
+  },
+  "status": "passed",
+  "max_memory_allocated": 5913807360,
+  "max_memory_reserved": 7184842752,
+  "elapsed_seconds": 108.99170330000015
+}

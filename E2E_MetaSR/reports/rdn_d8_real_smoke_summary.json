@@ -1,0 +1,26 @@
+{
+  "config": "configs/rdn_d8.yaml",
+  "data_root": "D:\\ddata",
+  "scope": "Real-image single training step for each N; full region batch; not a gradient-equivalence or convergence test",
+  "runs": [
+    {
+      "n": 1,
+      "report": "reports\\real_normal_001_d8_n1_20260930.json",
+      "allocated_GiB": 0.8414716720581055,
+      "reserved_GiB": 1.125,
+      "elapsed_seconds": 3.140996300000552,
+      "allocated_reduction_vs_prior_d16_percent": 16.597869639479633,
+      "status": "passed"
+    },
+    {
+      "n": 2,
+      "report": "reports\\real_normal_001_d8_n2_20260930.json",
+      "allocated_GiB": 1.5281848907470703,
+      "reserved_GiB": 1.8203125,
+      "elapsed_seconds": 5.350059099997452,
+      "allocated_reduction_vs_prior_d16_percent": 16.035103052863132,
+      "status": "passed"
+    }
+  ],
+  "comparison_note": "Previous D16 used seed 7; D8 YAML uses seed 1. Initial weights and sampled coordinates differ. These are not matched timing/quality comparisons."
+}

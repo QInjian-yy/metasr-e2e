@@ -1,0 +1,125 @@
+{
+  "comparison": "official full Meta-Upscale then crop versus optimized direct crop, identical parameters and feature input",
+  "source_matches_official_except_import": true,
+  "trainer_source_identical": true,
+  "device": "cpu",
+  "feature_shape": [
+    2,
+    64,
+    3,
+    4
+  ],
+  "scale": 32,
+  "official_full_output_shape": [
+    2,
+    3,
+    96,
+    128
+  ],
+  "cases": [
+    {
+      "dtype": "torch.float32",
+      "box_y_x_h_w": [
+        32,
+        32,
+        64,
+        64
+      ],
+      "output_shape": [
+        2,
+        3,
+        64,
+        64
+      ],
+      "forward_max_abs_error": 5.7220458984375e-06,
+      "forward_atol": 3e-06,
+      "forward_rtol": 3e-05,
+      "forward_mismatched_elements": 1,
+      "forward_element_count": 24576,
+      "forward_within_stated_tolerance": false,
+      "l1_loss_abs_error": 0.0,
+      "feature_gradient_max_abs_error": 1.862645149230957e-08,
+      "parameter_gradient_max_abs_error": 2.4139881134033203e-06,
+      "gradients_within_original_tolerance": true
+    },
+    {
+      "dtype": "torch.float32",
+      "box_y_x_h_w": [
+        7,
+        11,
+        65,
+        87
+      ],
+      "output_shape": [
+        2,
+        3,
+        65,
+        87
+      ],
+      "forward_max_abs_error": 5.7220458984375e-06,
+      "forward_atol": 3e-06,
+      "forward_rtol": 3e-05,
+      "forward_mismatched_elements": 0,
+      "forward_element_count": 33930,
+      "forward_within_stated_tolerance": true,
+      "l1_loss_abs_error": 0.0,
+      "feature_gradient_max_abs_error": 7.450580596923828e-09,
+      "parameter_gradient_max_abs_error": 2.641230821609497e-06,
+      "gradients_within_original_tolerance": true
+    },
+    {
+      "dtype": "torch.float64",
+      "box_y_x_h_w": [
+        32,
+        32,
+        64,
+        64
+      ],
+      "output_shape": [
+        2,
+        3,
+        64,
+        64
+      ],
+      "forward_max_abs_error": 2.842170943040401e-14,
+      "forward_atol": 1e-10,
+      "forward_rtol": 1e-10,
+      "forward_mismatched_elements": 0,
+      "forward_element_count": 24576,
+      "forward_within_stated_tolerance": true,
+      "l1_loss_abs_error": 0.0,
+      "feature_gradient_max_abs_error": 1.1796119636642288e-16,
+      "parameter_gradient_max_abs_error": 3.552713678800501e-15,
+      "gradients_within_original_tolerance": true,
+      "fp64_strict_forward_and_gradient_check_passed": true
+    },
+    {
+      "dtype": "torch.float64",
+      "box_y_x_h_w": [
+        7,
+        11,
+        65,
+        87
+      ],
+      "output_shape": [
+        2,
+        3,
+        65,
+        87
+      ],
+      "forward_max_abs_error": 2.842170943040401e-14,
+      "forward_atol": 1e-10,
+      "forward_rtol": 1e-10,
+      "forward_mismatched_elements": 0,
+      "forward_element_count": 33930,
+      "forward_within_stated_tolerance": true,
+      "l1_loss_abs_error": 0.0,
+      "feature_gradient_max_abs_error": 6.938893903907228e-17,
+      "parameter_gradient_max_abs_error": 6.314393452555578e-15,
+      "gradients_within_original_tolerance": true,
+      "fp64_strict_forward_and_gradient_check_passed": true
+    }
+  ],
+  "elapsed_seconds": 3.9760486999985005,
+  "note": "FP32 cases retain the original output tolerance and any failures; FP64 is a separate rounding diagnostic, not a replacement of FP32 requirements."
+}
