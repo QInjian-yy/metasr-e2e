@@ -6,7 +6,10 @@ import hashlib
 import json
 import math
 import random
+import subprocess
+from datetime import datetime
 from pathlib import Path
+from uuid import uuid4
 
 import numpy as np
 import torch
@@ -14,6 +17,7 @@ import yaml
 from torch.utils.data import DataLoader
 
 from engine import evaluate, train_wsi
+from experiments.summarize import summarize
 from models.baseline import MetaSRABMIL
 from validation import run_equivalence
 from wsi_data import collate_one_wsi, load_fold_datasets
@@ -59,6 +63,20 @@ def provenance(data_root, dataset):
             for name, path in paths.items()}
 
 
+def run_metadata(fold, device):
+    started = datetime.now().astimezone()
+    try:
+        result = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT,
+                                capture_output=True, text=True)
+        commit = result.stdout.strip() if result.returncode == 0 else ""
+    except FileNotFoundError:
+        commit = ""
+    return {"experiment_id": "EXP-" + started.strftime("%Y%m%d-%H%M%S") + "-" + uuid4().hex[:12],
+            "started_at": started.isoformat(), "fold": fold, "git_commit": commit,
+            "gpu": torch.cuda.get_device_name(device) if device.type == "cuda" else str(device),
+            "status": "incomplete"}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=ROOT / "configs/baseline.yaml")
@@ -100,6 +118,9 @@ def main():
     data_info = provenance(args.data_root, train_data)
     (args.output / "config.yaml").write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
     (args.output / "data_provenance.json").write_text(json.dumps(data_info, indent=2), encoding="utf-8")
+    info = run_metadata(args.fold, device)
+    info_file = args.output / "run_info.json"
+    info_file.write_text(json.dumps(info, indent=2), encoding="utf-8")
     best_auc, stale, iteration = -math.inf, 0, 0
     with (args.output / "history.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = None
@@ -144,6 +165,16 @@ def main():
             print(f"[epoch] {row}", flush=True)
             if stale >= config["early_stopping_patience"]:
                 break
+
+    info["status"] = "early_stopped" if stale >= config["early_stopping_patience"] else "completed"
+    info["finished_at"] = datetime.now().astimezone().isoformat()
+    info_file.write_text(json.dumps(info, indent=2), encoding="utf-8")
+    try:
+        result = summarize(args.output)
+        print(f"[summary] {result['experiment_id']} val_auc={result['val_auc']}", flush=True)
+    except (OSError, ValueError) as error:
+        print(f"[summary] Not saved: {error}. Run experiments/summarize.py with the output directory.",
+              flush=True)
 
 
 if __name__ == "__main__":

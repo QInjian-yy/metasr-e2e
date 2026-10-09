@@ -1,57 +1,29 @@
----
-experiment_id: 待分配唯一实验编号
-status: planned
-started_at: 待填写
-finished_at: 待填写
----
+# 实验补充说明（可选）
 
-# 实验记录
+训练结束会自动生成 experiments/EXP-*.md 和 results/summary.csv。
+通常只需在自动记录的“实验目的”和“实验结论”中补充几句；需要更完整说明时使用此模板。
+无需为自动汇总预先创建文件。
 
-## 实验编号与目的
+## 实验目的
 
-- 实验编号：
+- 实验编号：使用 run_info.json 中自动生成的编号。
 - 目的、假设：
 - 对照实验编号：
-- 本次唯一改动；无法控制的差异：
+- 本次改动：
 
-## 模型结构与配置
+## 模型与运行信息
 
-- 分类分支：SPP / ResNet18-GN
-- RDN 深度 D、checkpoint_rdb、scale、rgb_range：
-- SPP levels 与 embedding 维度，或 ResNet18 配置：
-- ABMIL、分类层：
-- 配置文件与 SHA256；保存的 runs/<编号>/config.yaml：
-- lambda_sr、SR crop、region microbatch、precision：
-- optimizer、lr、weight_decay、epochs、early_stopping_patience：
-
-## 数据划分与随机性
-
-- 数据集名称、版本和外部 DATA_ROOT：
-- manifest、标签文件、split 文件位置与 SHA256：
-- fold；train/val WSI 数；region 数范围：
-- 随机种子：
-- 数据预处理、增强、LR/HR 配对检查：
-
-## 代码与环境
-
-- 训练开始时完整 Git Commit：
-- 工作树是否干净；额外本地修改：
-- GPU 型号、数量、显存：
-- OS、Python、PyTorch、torchvision、CUDA：
-- 训练命令：
-
-## 日志与输出
-
-- 输出目录：runs/<实验编号>/
-- 训练日志：logs/<实验编号>.log
-- history.csv、config.yaml、data_provenance.json：
-- best.pth、last.pth 所在外部或忽略目录：
-- 完成状态、实际 epochs、停止原因、耗时、显存：
+- 模型结构、训练配置：见输出目录 config.yaml；可补充结构差异。
+- 数据划分、文件哈希：见 data_provenance.json；可补充数据集名称。
+- 随机种子：见 config.yaml。
+- Git Commit、GPU、fold、开始与结束时间、状态：见 run_info.json。
+- 训练日志与指标：见 history.csv；终端日志如有则记录路径。
+- 权重位置：输出目录中的 best.pth、last.pth，不提交到 GitHub。
 
 ## 指标
 
-仅填真实训练结果。下面各指标使用最高 val_auc 对应的同一个 epoch；
-并列取首次，未运行或缺失项留空。
+自动记录采用最高 Validation AUC 对应的同一个 epoch，并列取首次。
+未运行的指标留空，不填 0。
 
 | 指标 | 值 |
 |---|---|
@@ -64,11 +36,7 @@ finished_at: 待填写
 
 ## 实验结论
 
-- 观察到的结果与证据：
-- 相对匹配对照的变化：
-- 失败、异常及证据边界：
-- 本次能支持的结论：
+- 观察到的结果：
+- 相对对照的变化：
+- 异常或局限：
 - 下一步：
-
-正式训练结束后可使用 summarize.py 追加汇总。同一编号不能再次写入；
-需要重跑时创建新编号，原始记录、日志与输出保留。

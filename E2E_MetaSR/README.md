@@ -118,7 +118,7 @@ BF16 整批与分批可能存在数值差异，不能直接认定为等价。
 
 `history.csv` 保存每轮在线分类/SR/总损失、离线 train/val AUC、ACC、BACC、
 验证分类 loss 和训练 step 峰值显存。显存单位为字节，除以 2**30 得到 GiB。
-输出还包括 `config.yaml`、`data_provenance.json`、`equivalence.json`、
+输出还包括 `config.yaml`、`data_provenance.json`、`equivalence.json`、`run_info.json`、
 `last.pth`、`best.pth`、`best_val_predictions.csv`。
 最优 checkpoint 按 val_auc 选择；`spp_d8.yaml` 最多 100 epochs、patience=15，其他现有配置仍为 20/5。
 
@@ -136,6 +136,8 @@ D16/D8/D4 的 RDB/GFF 权重形状不同，不能跨深度直接严格加载整�
 - [每周研究进展](weekly_reports/README.md)
 - [2026-10-09 代码同步验证](experiments/validation_20261009.md)
 
-每次正式训练分配唯一实验编号，训练输出使用 runs/<实验编号>/。
-结果汇总脚本只追加新的编号，不覆盖历史实验；当前汇总仅包含表头。
+按原来的命令训练，使用新的输出目录。实验编号、GPU、Git Commit 自动记录；
+正常结束或早停自动追加 results/summary.csv，并生成 experiments/EXP-*.md。
+无需手填汇总参数。可选补汇总只需 `python -B experiments/summarize.py <输出目录>`。
+历史实验和已有结论不会被覆盖；当前尚无正式训练结果。
 Git 仓库副本继续保留已有审计、测试和历史报告，旧记录不作为新 SPP 的正式结果。

@@ -1,11 +1,20 @@
 # SPP D8 E2E 服务器运行
 
-## 上传
+## 从 GitHub 获取代码
 
-上传清理后的整个 `E2E_MetaSR/` 文件夹。保留 `configs/`、`models/`、
-`vendor/`、`reference/trainer.py`、`validation.py`、`downstream_train/` 及根目录运行代码。
-无需额外上传 `Meta-SR-Pytorch-0.4.0/` 或原 `E2E/`，无需预训练权重。
-历史测试输出和调试脚本已删除，旧 probe/unittest 命令不再适用。
+本地修改提交到 GitHub，AutoDL 拉取 main 进行训练。首次在 AutoDL 终端执行：
+
+```bash
+cd /root/autodl-tmp
+git clone https://github.com/QInjian-yy/metasr-e2e.git
+cd metasr-e2e/E2E_MetaSR
+```
+
+后续更新在仓库中执行 `git pull --ff-only`。训练需要 `E2E_MetaSR/` 内的
+configs、models、vendor、reference、validation.py、downstream_train 等运行文件；
+无需依赖外部 `Meta-SR-Pytorch-0.4.0/` 或原 `E2E/`，无需预训练权重。
+网络和磁盘说明见 AutoDL 官方的 [Git 文档](https://www.autodl.com/docs/git/) 与
+[目录说明](https://www.autodl.com/docs/env/)。
 
 真实图片可以放在项目外：
 
@@ -22,7 +31,7 @@
 
 ## 环境
 
-进入上传后的 E2E_MetaSR，激活匹配的 CUDA PyTorch/torchvision 环境：
+进入仓库中的 E2E_MetaSR，激活匹配的 CUDA PyTorch/torchvision 环境：
 
 ```bash
 python -m pip install -r requirements.txt
@@ -38,6 +47,9 @@ scale=32、lambda_sr=0.1、256 HR crop。BF16 不支持时会报错，
 默认 `training.use_region_microbatch=false`。
 
 在 Linux 服务器执行，替换真实数据路径：
+
+只需原来的训练参数，无需手填实验编号、GPU 或 Commit。
+以下 tee 用于可选的终端日志保存，自动记录不依赖它。
 
 ```bash
 mkdir -p logs
@@ -56,6 +68,30 @@ CUDA_VISIBLE_DEVICES=0 python -u -B train_e2e.py \
 日志写到 output 目录之外，避免启动时的非空目录保护阻止运行。
 当前不支持 resume，已有实验目录不能覆盖。训练启动自动执行保留的校验逻辑。
 可在服务器已有 tmux/screen 会话中运行。
+
+## 自动记录与回传结果
+
+训练开始自动保存唯一编号、GPU、Git Commit 等到 output/run_info.json。
+正常结束或早停自动追加 results/summary.csv，并生成 experiments/EXP-*.md；
+中断保持 incomplete，不会记成已完成。可选补汇总只需一行：
+
+```bash
+python -B experiments/summarize.py runs/spp_d8_full_fold0
+```
+
+在 AutoDL 的仓库根目录回传小型结果记录：
+
+```bash
+cd /root/autodl-tmp/metasr-e2e
+git add E2E_MetaSR/results/summary.csv E2E_MetaSR/experiments/EXP-*.md
+git commit -m "Record training results"
+git push origin main
+```
+
+数据、权重、原始 runs/ 和 logs/ 已被忽略，不回传。
+本地 Git 工作副本执行 `git pull --ff-only` 即可取回记录；
+当前工作副本为 `D:\metasr-e2e-sync-20261009`，`D:\sdx_model\E2E_MetaSR` 是无 Git 的源目录。
+完整记录说明见 [experiments/README.md](experiments/README.md)。
 
 ## 显式分批
 
