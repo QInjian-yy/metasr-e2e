@@ -7,7 +7,7 @@ import numpy as np
 import torch
 
 from engine import autocast, memory_summary
-from models.baseline import MetaSRABMIL
+from models.baseline import model_from_checkpoint
 from wsi_data import load_images
 
 
@@ -34,11 +34,8 @@ def main():
     if args.output.exists():
         raise FileExistsError(args.output)
     saved = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
-    if saved.get("format") != "metasr-abmil-v1":
-        raise ValueError("Expected a MetaSR baseline checkpoint")
     device = torch.device(args.device)
-    model = MetaSRABMIL(**saved["config"]["metasr"]).to(device).eval()
-    model.load_state_dict(saved["model_state"], strict=True)
+    model = model_from_checkpoint(saved, device).eval()
     lr = load_images([args.lr_image], 256).to(device)
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats(device)

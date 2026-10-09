@@ -8,7 +8,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from engine import evaluate
-from models.baseline import MetaSRABMIL
+from models.baseline import model_from_checkpoint
 from train_e2e import ROOT, provenance
 from wsi_data import collate_one_wsi, load_fold_datasets
 
@@ -23,15 +23,12 @@ def main():
     parser.add_argument("--predictions-csv", type=Path)
     args = parser.parse_args()
     saved = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
-    if saved.get("format") != "metasr-abmil-v1":
-        raise ValueError("Expected a MetaSR baseline checkpoint")
+    device = torch.device(args.device)
+    model = model_from_checkpoint(saved, device)
     _, val = load_fold_datasets(args.data_root, saved["fold"], args.labels_csv, args.split_dir, require_hr=False)
     hashes = lambda info: {key: value["sha256"] for key, value in info.items()}
     if hashes(provenance(args.data_root, val)) != hashes(saved["data_provenance"]):
         raise ValueError("Manifest/labels/split differ from the training checkpoint")
-    device = torch.device(args.device)
-    model = MetaSRABMIL(**saved["config"]["metasr"]).to(device)
-    model.load_state_dict(saved["model_state"], strict=True)
     loader = DataLoader(val, batch_size=1, collate_fn=collate_one_wsi)
     result = evaluate(model, loader, device, saved["config"])
     predictions = result.pop("predictions")

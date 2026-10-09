@@ -1,4 +1,4 @@
-"""Independent CAMELYON16 Meta-RDN + Meta-SR + ResNet18 + ABMIL training."""
+"""Independent CAMELYON16 Meta-RDN + Meta-SR + SPP or ResNet18 + ABMIL training."""
 
 import argparse
 import csv
@@ -23,6 +23,9 @@ ROOT = Path(__file__).resolve().parent
 
 def load_config(path):
     config = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    config.setdefault("classification_encoder", "resnet18")
+    if config["classification_encoder"] not in ("resnet18", "spp"):
+        raise ValueError("classification_encoder must be resnet18 or spp")
     if config["metasr"]["scale"] != 32 or config["metasr"]["rgb_range"] != 1:
         raise ValueError("This dataset uses 256 -> 8192 and RGB in [0,1]: scale=32, rgb_range=1")
     if config["precision"] not in ("fp32", "bf16"):
@@ -91,7 +94,8 @@ def main():
         raise ValueError("Validation needs both classes for val_auc checkpoint selection")
     loaders = [DataLoader(data, batch_size=1, shuffle=shuffle, collate_fn=collate_one_wsi)
                for data, shuffle in ((train_data, True), (train_data.evaluation_view(), False), (val_data, False))]
-    model = MetaSRABMIL(**config["metasr"]).to(device)
+    model = MetaSRABMIL(classification_encoder=config["classification_encoder"],
+                       **config["metasr"]).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"], weight_decay=config["weight_decay"])
     data_info = provenance(args.data_root, train_data)
     (args.output / "config.yaml").write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
@@ -125,7 +129,8 @@ def main():
                 best_auc, stale = val_result["auc"], 0
             else:
                 stale += 1
-            saved = {"format": "metasr-abmil-v1", "epoch": epoch, "fold": args.fold,
+            saved = {"format": "metasr-abmil-v2", "architecture": model.architecture(),
+                     "epoch": epoch, "fold": args.fold,
                      "config": config, "data_provenance": data_info, "model_state": model.state_dict(),
                      "optimizer_state": optimizer.state_dict(), "best_val_auc": best_auc}
             torch.save(saved, args.output / "last.pth")

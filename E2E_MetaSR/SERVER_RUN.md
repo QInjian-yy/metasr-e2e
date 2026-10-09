@@ -1,97 +1,97 @@
-# A800 full-region batch 运行说明
+# SPP D8 E2E 服务器运行
 
-每个训练 step 处理一张 WSI，自动读取该 WSI 的全部 N 个 region，一次 encoder forward，
-一次 ABMIL、联合 backward 和 Adam.step。N 不需要手动固定。
+## 上传
 
-## 上传与数据
+上传清理后的整个 `E2E_MetaSR/` 文件夹。保留 `configs/`、`models/`、
+`vendor/`、`reference/trainer.py`、`validation.py`、`downstream_train/` 及根目录运行代码。
+无需额外上传 `Meta-SR-Pytorch-0.4.0/` 或原 `E2E/`，无需预训练权重。
+历史测试输出和调试脚本已删除，旧 probe/unittest 命令不再适用。
 
-上传代码包并解压得到 `E2E_MetaSR/`。代码包已包含 `vendor/official/`，
-无需额外上传原来的 `Meta-SR-Pytorch-0.4.0/` 或 `E2E/`，无需预训练权重。
-模型从随机初始化开始。代码包不含真实图像、运行结果或 Python 环境。
-
-真实数据可放在项目外，下面用 `/path/to/camelyon16_data` 作为占位路径：
+真实图片可以放在项目外：
 
 ```text
-/path/to/camelyon16_data/
-  images_256/                 # 256×256 RGB LR
-  images_8192/                # 对应的原始 8192×8192 HR
+/path/to/full_data/
+  images_256/                 # LR 256×256 RGB
+  images_8192/                # 配对 HR 8192×8192 RGB
   manifests/patch_manifest.csv
 ```
 
-LR、HR 文件名必须对应 manifest 的 filename。使用与这些图像匹配的 manifest；
-不要用其他数据集的 manifest 覆盖。HR 保留 8192 原图，训练时随机取 256 crop，
-不要提前把 HR resize 到 256。服务器已有标签和划分时，用下面命令中的
-`--labels-csv` 和 `--split-dir` 显式指定服务器文件，不使用代码包自带的默认 CSV。
-标签 CSV 需要 `case_id,slide_id,label` 列（0/1）；划分目录需要 `splits_0.csv` 等文件，
-包含 `train,val` 列，值为 case_id。
+图片文件名需对应 manifest 的 filename。不要把 HR 预先缩小。
+现有三折划分无需重做：默认使用 `downstream_train/` 中的标签和三个 split 文件；
+使用服务器已有划分时，将下方 `--labels-csv` 和 `--split-dir` 替换成对应路径。
 
-## 环境与配置
+## 环境
 
-激活服务器已有的 CUDA PyTorch 环境，进入解压后的 E2E_MetaSR 目录执行：
+进入上传后的 E2E_MetaSR，激活匹配的 CUDA PyTorch/torchvision 环境：
 
 ```bash
 python -m pip install -r requirements.txt
-python -c "import torch, torchvision; assert torch.cuda.is_available(); assert torch.cuda.is_bf16_supported(); print(torch.__version__, torchvision.__version__, torch.version.cuda, torch.cuda.get_device_name(0))"
 ```
 
-若没有可用的 CUDA PyTorch 环境，先根据服务器驱动安装匹配的 torch/torchvision：
-https://pytorch.org/get-started/locally/
+`configs/spp_d8.yaml` 使用 SPP、8 个 RDB、BF16、RDB checkpoint、
+scale=32、lambda_sr=0.1、256 HR crop。BF16 不支持时会报错，
+需要明确选择 FP32 配置；不会自动切换精度。
 
-`configs/baseline.yaml` 的关键配置：
+## 整批训练
+
+每个 step 处理一张 WSI 的全部 N 个 region，N 从数据自动读取。
+默认 `training.use_region_microbatch=false`。
+
+在 Linux 服务器执行，替换真实数据路径：
+
+```bash
+mkdir -p logs
+set -o pipefail
+CUDA_VISIBLE_DEVICES=0 python -u -B train_e2e.py \
+  --config configs/spp_d8.yaml \
+  --data-root /path/to/full_data \
+  --labels-csv downstream_train/camelyon16_labels.csv \
+  --split-dir downstream_train \
+  --fold 0 \
+  --output runs/spp_d8_full_fold0 \
+  2>&1 | tee logs/spp_d8_full_fold0.log
+```
+
+分别将 fold 改为 1、2，并使用不同的 output 和日志文件，运行其他两折。
+日志写到 output 目录之外，避免启动时的非空目录保护阻止运行。
+当前不支持 resume，已有实验目录不能覆盖。训练启动自动执行保留的校验逻辑。
+可在服务器已有 tmux/screen 会话中运行。
+
+## 显式分批
+
+复制 `configs/spp_d8.yaml` 为 `configs/spp_d8_micro2.yaml`，只修改：
 
 ```yaml
-sr_train_crop: 256
-lambda_sr: 0.1
-precision: bf16
 training:
-  use_region_microbatch: false
-  region_microbatch_size: 1
+  use_region_microbatch: true
+  region_microbatch_size: 2
 ```
 
-`metasr.scale=32`，`metasr.checkpoint_rdb=true`。microbatch 开关为 false 时，
-size=1 不生效；所有 N 个 region 一起编码。SR decoder 的 LR chunk 仍正常使用。
+训练命令改用 `--config configs/spp_d8_micro2.yaml`，
+并使用新的 output 和日志路径。没有训练入口的 microbatch CLI 参数。
+N=5 时按 2、2、1 编码，全部 embedding 汇总后仍只执行一次 ABMIL/backward/step。
+分批保留计算图；BF16 下可能与整批产生数值差异。显存不足会报错，不会自动截断数据。
 
-## 先验证，再训练
+## 分类评估与完整 SR 推理
 
 ```bash
-python -B -m unittest discover -s tests -v
-CUDA_VISIBLE_DEVICES=0 python -B validation.py --device cuda:0 --output reports/equivalence_a800.json
-CUDA_VISIBLE_DEVICES=0 python -B scripts/probe_cuda.py --n 37 --size 256 --sr-crop 256 --precision bf16 --lambda-sr 0.1 --output reports/a800_n37_crop256.json
+CUDA_VISIBLE_DEVICES=0 python -B eval_e2e.py \
+  --checkpoint runs/spp_d8_full_fold0/best.pth \
+  --data-root /path/to/full_data \
+  --labels-csv downstream_train/camelyon16_labels.csv \
+  --split-dir downstream_train \
+  --predictions-csv runs/spp_d8_full_fold0/eval_predictions.csv
+
+CUDA_VISIBLE_DEVICES=0 python -B infer_sr.py \
+  --checkpoint runs/spp_d8_full_fold0/best.pth \
+  --lr-image /path/to/full_data/images_256/region.png \
+  --output runs/spp_d8_full_fold0/region_sr.npy
 ```
 
-当前随包 manifest 最大 region 数为 37。若服务器使用其他 manifest，按其最大 N 探测。
-probe 默认 full-region batch，不要添加 `--use-region-microbatch`。
-它使用合成张量，执行完整 forward/backward/Adam.step，不读取真实图像。
-不能只凭进程退出码认定通过；读取 JSON：
+评估使用 checkpoint 中保存的 fold，并核对原 manifest、标签和 split 的哈希。
+SR 推理为单张 LR 输出完整 8K，逐块写入磁盘；每张 FP32 文件约 768 MiB。
+评估和推理按 checkpoint 保存的实际结构构造模型并严格加载。
 
-```bash
-python - <<'PY'
-import json
-from pathlib import Path
-r = json.loads(Path('reports/a800_n37_crop256.json').read_text())
-print('status:', r['status'], 'stages:', r['training_stages'])
-print('allocated GiB:', r['max_memory_allocated'] / 2**30)
-print('reserved GiB:', r['max_memory_reserved'] / 2**30)
-print('step seconds:', r['elapsed_seconds'])
-assert r['status'] == 'passed' and all(r['training_stages'].values()), r
-PY
-```
+训练指标与峰值显存保存到 `history.csv`，终端日志通过 tee 保存。
+训练损失含分类与 SR；val_loss 只含分类。完整资源需求需在目标服务器实测。
 
-上述验证通过、显存有余量后，替换服务器已有的数据、标签和划分路径再启动 fold 0：
-
-```bash
-CUDA_VISIBLE_DEVICES=0 python -u train_e2e.py \
-  --config configs/baseline.yaml \
-  --data-root /path/to/camelyon16_data \
-  --labels-csv /path/to/camelyon16_labels.csv \
-  --split-dir /path/to/cross_validation_splits \
-  --fold 0 \
-  --output runs/fold0_full_crop256
-```
-
-输出目录必须为空或不存在。当前入口不支持 resume。默认最多 20 epochs，
-按验证 AUC 早停；输出 `history.csv`、`best.pth`、`last.pth` 和运行配置。
-远程断连后仍需运行时，可在已有 tmux/screen 会话中执行同一训练命令。
-
-若只想先做一轮真实数据检查，将配置复制为新的 YAML，把 `epochs` 改为 1，
-用 `--config` 指向该文件，并指定另一个空输出目录。

@@ -1,4 +1,4 @@
-"""Shared official RDN features -> Meta-Upscale and E2E ResNet18-GN/ABMIL."""
+"""Shared official RDN features -> Meta-Upscale and SPP or ResNet18-GN/ABMIL."""
 
 import torch
 import torch.nn.functional as F
@@ -22,17 +22,37 @@ def _replace_bn_with_gn(module, num_groups=32):
             _replace_bn_with_gn(child, num_groups)
 
 
+class SpatialPyramidPooling(nn.Module):
+    def forward(self, feature):
+        return torch.cat([F.adaptive_max_pool2d(feature, (level, level)).flatten(start_dim=1)
+                          for level in (1, 2, 3, 6)], dim=1)
+
+
 class MetaSRABMIL(nn.Module):
-    def __init__(self, **metasr):
+    def __init__(self, classification_encoder="resnet18", **metasr):
         super().__init__()
+        if classification_encoder not in ("resnet18", "spp"):
+            raise ValueError(f"Unknown classification_encoder: {classification_encoder}")
+        self.classification_encoder = classification_encoder
         self.sr = MemoryEfficientMetaRDN(**metasr)
-        # Copied from E2E/downstream/shared_model.py:SharedE2EModel.__init__.
-        self.region_encoder = resnet18(weights=None)
-        self.region_encoder.conv1 = nn.Conv2d(64, 64, 7, stride=2, padding=3, bias=False)
-        self.region_encoder.fc = nn.Identity()
-        _replace_bn_with_gn(self.region_encoder)
-        self.classifier = nn.Linear(512, 2)
-        self.mil_head = GatedAttentionMIL(input_dim=512, hidden_dim=128)
+        if classification_encoder == "spp":
+            self.region_encoder = SpatialPyramidPooling()
+            input_dim = 64 * (1 + 4 + 9 + 36)
+        else:
+            # Copied from E2E/downstream/shared_model.py:SharedE2EModel.__init__.
+            self.region_encoder = resnet18(weights=None)
+            self.region_encoder.conv1 = nn.Conv2d(64, 64, 7, stride=2, padding=3, bias=False)
+            self.region_encoder.fc = nn.Identity()
+            _replace_bn_with_gn(self.region_encoder)
+            input_dim = 512
+        self.classifier = nn.Linear(input_dim, 2)
+        self.mil_head = GatedAttentionMIL(input_dim=input_dim, hidden_dim=128)
+
+    def architecture(self):
+        return {"classification_encoder": self.classification_encoder,
+                "embedding_dim": self.mil_head.attention_V.in_features,
+                "attention_hidden_dim": self.mil_head.attention_V.out_features,
+                "num_classes": self.classifier.out_features}
 
     def encode_regions(self, lr):
         feature = self.sr.extract_features(lr)
@@ -61,3 +81,23 @@ class MetaSRABMIL(nn.Module):
                 raise ValueError("Predicted SR crop and GT crop must have identical shapes")
             sr_loss = F.l1_loss(prediction.float(), hr_crop.float())
         return cls_loss + lambda_sr * sr_loss, cls_loss, sr_loss, logits
+
+
+def model_from_checkpoint(saved, device="cpu"):
+    """Construct the saved architecture and strictly load every model parameter."""
+    config = saved["config"]
+    if saved.get("format") == "metasr-abmil-v1":
+        classification_encoder = "resnet18"
+        if config.get("classification_encoder", "resnet18") != "resnet18":
+            raise ValueError("Legacy metasr-abmil-v1 checkpoints require ResNet18")
+    elif saved.get("format") == "metasr-abmil-v2":
+        classification_encoder = saved["architecture"]["classification_encoder"]
+        if config["classification_encoder"] != classification_encoder:
+            raise ValueError("Checkpoint config and architecture disagree")
+    else:
+        raise ValueError(f"Unknown MetaSR checkpoint format: {saved.get('format')}")
+    model = MetaSRABMIL(classification_encoder=classification_encoder, **config["metasr"])
+    if saved.get("format") == "metasr-abmil-v2" and saved["architecture"] != model.architecture():
+        raise ValueError("Checkpoint architecture dimensions do not match the selected model")
+    model.load_state_dict(saved["model_state"], strict=True)
+    return model.to(device)
