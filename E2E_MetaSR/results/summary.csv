@@ -1,0 +1,1 @@
+experiment_id,recorded_at,status,classification_encoder,rdn_blocks,fold,seed,git_commit,gpu,best_epoch,train_loss_cls,train_loss_sr,train_loss_total,train_auc,train_acc,train_bacc,val_loss,val_auc,val_acc,val_bacc,run_dir,history_file,log_file,config_file,record_file

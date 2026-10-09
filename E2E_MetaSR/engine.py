@@ -8,6 +8,7 @@ import torch.nn.functional as F
 from PIL import Image
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score
 
+from augmentation import AugmentedPath
 from wsi_data import load_images
 
 
@@ -44,6 +45,14 @@ def wsi_loss(model, sample, device, config):
     batch_size = region_batch_size(config, n)
     coefficient = config["lambda_sr"]
     if coefficient:
+        for path in sample["lr_paths"] + sample["hr_paths"]:
+            if isinstance(path, AugmentedPath):
+                params = path.params
+                if (params.horizontal_flip != params.vertical_flip
+                        or (params.rotation_k + 2 * int(params.horizontal_flip)) % 4):
+                    raise ValueError("SR supervision cannot use geometric augmentation: "
+                                     "HR crops are not transformed to match augmented regions. "
+                                     "Disable geometry or set lambda_sr=0.")
         crop = config["sr_train_crop"]
         # Sample once per region before batching, so batching does not change the crops.
         boxes = [(y, x, crop, crop)
@@ -90,7 +99,7 @@ def train_wsi(model, sample, optimizer, device, config, log_gradients=False):
     if not torch.isfinite(total):
         raise FloatingPointError("Non-finite joint loss")
     total.backward()
-    norms = {"rdn": gradient_norm(model.sr), "resnet18": gradient_norm(model.region_encoder),
+    norms = {"rdn": gradient_norm(model.sr), "region_encoder": gradient_norm(model.region_encoder),
              "abmil": gradient_norm(model.mil_head), "classifier": gradient_norm(model.classifier),
              "p2w": gradient_norm(model.sr.P2W)}
     if not all(math.isfinite(value) for value in norms.values()):
