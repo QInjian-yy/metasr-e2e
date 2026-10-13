@@ -36,7 +36,10 @@ SPP 没有可学习参数，没有 ResNet 实例、额外投影、归一化或�
 SR 分支使用同一次编码得到的完整 feature，以绝对 HR 坐标查询每个 region 的 HR crop。
 scale=32，LR/HR 图像为 RGB [0,1]。完整 8K SR 推理复用完整 feature，在 no_grad 下逐块解码并写入 memmap。
 
-保留当前官方 MeanShift 的参数行为：其参数仍可训练。
+`metasr.freeze_meanshift` 默认为 `false`，保留旧实验中 MeanShift 参数可训练的行为。
+在新配置的 `metasr` 下设置 `freeze_meanshift: true`，会冻结 `sub_mean` 和 `add_mean`
+的 weight/bias；不改官方代码、网络结构或前向计算。相同权重下输出不变，后续训练更新会不同。
+开关随配置保存在 checkpoint 中，评估和 SR 推理加载时自动恢复；旧 checkpoint 缺少该字段时仍默认关闭。
 训练入口保持几何增强关闭；开启 SR 监督时，未同步到 HR 的非恒等几何变换会报错。
 
 ## 数据与三折划分

@@ -17,14 +17,20 @@ def official_args(scale=32, rgb_range=1):
 
 class MemoryEfficientMetaRDN(MetaRDN):
     def __init__(self, scale=32, lr_chunk_size=256, checkpoint_rdb=True, rgb_range=1,
-                 rdn_blocks=16):
+                 rdn_blocks=16, freeze_meanshift=False):
         if isinstance(scale, bool) or not isinstance(scale, int) or scale < 1:
             raise ValueError("This baseline supports positive integer scales only")
         if not isinstance(lr_chunk_size, int) or lr_chunk_size < 1:
             raise ValueError("lr_chunk_size must be a positive integer")
         if isinstance(rdn_blocks, bool) or not isinstance(rdn_blocks, int) or not 1 <= rdn_blocks <= 16:
             raise ValueError("rdn_blocks must be an integer from 1 to 16")
+        if not isinstance(freeze_meanshift, bool):
+            raise ValueError("freeze_meanshift must be a boolean")
         super().__init__(official_args(scale, rgb_range))
+        if freeze_meanshift:
+            # The official module attribute does not freeze its Parameters.
+            self.sub_mean.requires_grad_(False)
+            self.add_mean.requires_grad_(False)
         if rdn_blocks != self.D:
             self.D = rdn_blocks
             self.RDBs = self.RDBs[:rdn_blocks]

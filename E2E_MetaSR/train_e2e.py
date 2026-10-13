@@ -36,6 +36,9 @@ def load_config(path):
         raise ValueError("precision must be fp32 or bf16")
     if not isinstance(config["metasr"]["checkpoint_rdb"], bool):
         raise ValueError("checkpoint_rdb must be a boolean")
+    config["metasr"].setdefault("freeze_meanshift", False)
+    if not isinstance(config["metasr"]["freeze_meanshift"], bool):
+        raise ValueError("metasr.freeze_meanshift must be a boolean")
     rdn_blocks = config["metasr"].get("rdn_blocks", 16)
     if isinstance(rdn_blocks, bool) or not isinstance(rdn_blocks, int) or not 1 <= rdn_blocks <= 16:
         raise ValueError("metasr.rdn_blocks must be an integer from 1 to 16")
