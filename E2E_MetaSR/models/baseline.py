@@ -29,11 +29,16 @@ class SpatialPyramidPooling(nn.Module):
 
 
 class MetaSRABMIL(nn.Module):
-    def __init__(self, classification_encoder="resnet18", **metasr):
+    def __init__(self, classification_encoder="resnet18", classification_head="linear", **metasr):
         super().__init__()
         if classification_encoder not in ("resnet18", "spp"):
             raise ValueError(f"Unknown classification_encoder: {classification_encoder}")
+        if classification_head not in ("linear", "mlp"):
+            raise ValueError(f"Unknown classification_head: {classification_head}")
+        if classification_head == "mlp" and classification_encoder != "spp":
+            raise ValueError("classification_head=mlp requires classification_encoder=spp")
         self.classification_encoder = classification_encoder
+        self.classification_head = classification_head
         self.sr = MemoryEfficientMetaRDN(**metasr)
         if classification_encoder == "spp":
             self.region_encoder = SpatialPyramidPooling()
@@ -45,14 +50,23 @@ class MetaSRABMIL(nn.Module):
             self.region_encoder.fc = nn.Identity()
             _replace_bn_with_gn(self.region_encoder)
             input_dim = 512
-        self.classifier = nn.Linear(input_dim, 2)
+        if classification_head == "linear":
+            self.classifier = nn.Linear(input_dim, 2)
+        else:
+            self.classifier = nn.Sequential(nn.Linear(input_dim, 128), nn.ReLU(),
+                                            nn.Dropout(0.3), nn.Linear(128, 2))
         self.mil_head = GatedAttentionMIL(input_dim=input_dim, hidden_dim=128)
 
     def architecture(self):
-        return {"classification_encoder": self.classification_encoder,
-                "embedding_dim": self.mil_head.attention_V.in_features,
-                "attention_hidden_dim": self.mil_head.attention_V.out_features,
-                "num_classes": self.classifier.out_features}
+        output = self.classifier if self.classification_head == "linear" else self.classifier[-1]
+        architecture = {"classification_encoder": self.classification_encoder,
+                        "embedding_dim": self.mil_head.attention_V.in_features,
+                        "attention_hidden_dim": self.mil_head.attention_V.out_features,
+                        "num_classes": output.out_features}
+        if self.classification_head == "mlp":
+            architecture.update(classification_head="mlp", classifier_hidden_dim=128,
+                                classifier_dropout=self.classifier[2].p)
+        return architecture
 
     def encode_regions(self, lr):
         feature = self.sr.extract_features(lr)
@@ -88,15 +102,18 @@ def model_from_checkpoint(saved, device="cpu"):
     config = saved["config"]
     if saved.get("format") == "metasr-abmil-v1":
         classification_encoder = "resnet18"
-        if config.get("classification_encoder", "resnet18") != "resnet18":
-            raise ValueError("Legacy metasr-abmil-v1 checkpoints require ResNet18")
+        if (config.get("classification_encoder", "resnet18") != "resnet18"
+                or config.get("classification_head", "linear") != "linear"):
+            raise ValueError("Legacy metasr-abmil-v1 checkpoints require ResNet18 with a linear head")
     elif saved.get("format") == "metasr-abmil-v2":
         classification_encoder = saved["architecture"]["classification_encoder"]
         if config["classification_encoder"] != classification_encoder:
             raise ValueError("Checkpoint config and architecture disagree")
     else:
         raise ValueError(f"Unknown MetaSR checkpoint format: {saved.get('format')}")
-    model = MetaSRABMIL(classification_encoder=classification_encoder, **config["metasr"])
+    model = MetaSRABMIL(classification_encoder=classification_encoder,
+                       classification_head=config.get("classification_head", "linear"),
+                       **config["metasr"])
     if saved.get("format") == "metasr-abmil-v2" and saved["architecture"] != model.architecture():
         raise ValueError("Checkpoint architecture dimensions do not match the selected model")
     model.load_state_dict(saved["model_state"], strict=True)

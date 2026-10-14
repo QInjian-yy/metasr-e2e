@@ -7,6 +7,7 @@ are ignored here; they must not influence E2E training or validation.
 
 import csv
 import copy
+import os
 from collections import defaultdict
 from pathlib import Path
 
@@ -220,7 +221,7 @@ def load_images(paths, size):
         raise ValueError("Image micro-batch cannot be empty")
     batch = torch.empty((len(paths), 3, size, size), dtype=torch.float32)
     for index, path in enumerate(paths):
-        with Image.open(path) as image:
+        with Image.open(os.fspath(path)) as image:
             if image.size != (size, size):
                 raise ValueError("{} has size {}; expected ({}, {}), no resize allowed"
                                  .format(path, image.size, size, size))

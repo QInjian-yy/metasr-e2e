@@ -1,0 +1,6 @@
+# Optional training-only geometry; pass with --augmentation-config.
+augmentation:
+  enabled: true
+  horizontal_flip: 0.5
+  vertical_flip: 0.5
+  rotation90: true

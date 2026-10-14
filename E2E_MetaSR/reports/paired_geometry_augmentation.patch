@@ -1,0 +1,543 @@
+diff --git a/E2E_MetaSR/train_e2e.py b/E2E_MetaSR/train_e2e.py
+--- a/E2E_MetaSR/train_e2e.py
++++ b/E2E_MetaSR/train_e2e.py
+@@ -7,6 +7,7 @@
+ import math
+ import random
+ import subprocess
++from dataclasses import asdict
+ from datetime import datetime
+ from pathlib import Path
+ from uuid import uuid4
+@@ -16,6 +17,7 @@
+ import yaml
+ from torch.utils.data import DataLoader
+ 
++from augmentation import AugmentationConfig, load_augmentation_config
+ from engine import evaluate, train_wsi
+ from experiments.summarize import summarize
+ from models.baseline import MetaSRABMIL
+@@ -61,6 +63,10 @@
+         raise ValueError("Training requires a crop smaller than 8192; use infer_sr.py for full reconstruction")
+     if not math.isfinite(config["lambda_sr"]) or config["lambda_sr"] < 0:
+         raise ValueError("lambda_sr must be finite and nonnegative")
++    augmentation = config.get("augmentation", {})
++    if not isinstance(augmentation, dict):
++        raise ValueError("augmentation must be a mapping")
++    AugmentationConfig(**augmentation)
+     return config
+ 
+ 
+@@ -88,6 +94,8 @@
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument("--config", type=Path, default=ROOT / "configs/baseline.yaml")
++    parser.add_argument("--augmentation-config", type=Path,
++                        help="Optional geometry YAML; overrides the main config's augmentation mapping")
+     parser.add_argument("--data-root", type=Path, required=True)
+     parser.add_argument("--fold", type=int, default=0)
+     parser.add_argument("--labels-csv", type=Path, default=ROOT / "downstream_train/camelyon16_labels.csv")
+@@ -96,6 +104,8 @@
+     parser.add_argument("--device", default="cuda:0")
+     args = parser.parse_args()
+     config = load_config(args.config)
++    if args.augmentation_config is not None:
++        config["augmentation"] = asdict(load_augmentation_config(args.augmentation_config))
+     device = torch.device(args.device)
+     if device.type == "cuda":
+         torch.cuda.set_device(device)
+@@ -115,7 +125,7 @@
+     torch.cuda.manual_seed_all(config["seed"])
+     torch.backends.cudnn.benchmark = False
+     train_data, val_data = load_fold_datasets(args.data_root, args.fold, args.labels_csv,
+-        args.split_dir, require_hr=config["lambda_sr"] > 0)
++        args.split_dir, require_hr=config["lambda_sr"] > 0, augmentation=config.get("augmentation"))
+     if set(sample["label"] for sample in val_data.samples) != {0, 1}:
+         raise ValueError("Validation needs both classes for val_auc checkpoint selection")
+     loaders = [DataLoader(data, batch_size=1, shuffle=shuffle, collate_fn=collate_one_wsi)
+diff --git a/E2E_MetaSR/engine.py b/E2E_MetaSR/engine.py
+--- a/E2E_MetaSR/engine.py
++++ b/E2E_MetaSR/engine.py
+@@ -9,6 +9,7 @@
+ from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score
+ 
+ from augmentation import AugmentedPath
++from paired_geometry import crop_transformed
+ from wsi_data import load_images
+ 
+ 
+@@ -27,7 +28,9 @@
+                 raise ValueError(f"{path}: expected HR {(size, size)}, got {image.size}")
+             if min(y, x) < 0 or min(h, w) < 1 or y+h > size or x+w > size:
+                 raise ValueError("Invalid HR crop")
+-            array = np.array(image.crop((x, y, x+w, y+h)).convert("RGB"), dtype=np.uint8)
++            crop = (crop_transformed(image, box, path.params) if isinstance(path, AugmentedPath)
++                    else image.crop((x, y, x+w, y+h)))
++            array = np.array(crop.convert("RGB"), dtype=np.uint8)
+         crops.append(torch.from_numpy(array).permute(2, 0, 1).float().div_(255))
+     return torch.stack(crops)
+ 
+@@ -45,14 +48,6 @@
+     batch_size = region_batch_size(config, n)
+     coefficient = config["lambda_sr"]
+     if coefficient:
+-        for path in sample["lr_paths"] + sample["hr_paths"]:
+-            if isinstance(path, AugmentedPath):
+-                params = path.params
+-                if (params.horizontal_flip != params.vertical_flip
+-                        or (params.rotation_k + 2 * int(params.horizontal_flip)) % 4):
+-                    raise ValueError("SR supervision cannot use geometric augmentation: "
+-                                     "HR crops are not transformed to match augmented regions. "
+-                                     "Disable geometry or set lambda_sr=0.")
+         crop = config["sr_train_crop"]
+         # Sample once per region before batching, so batching does not change the crops.
+         boxes = [(y, x, crop, crop)
+diff --git a/E2E_MetaSR/README.md b/E2E_MetaSR/README.md
+--- a/E2E_MetaSR/README.md
++++ b/E2E_MetaSR/README.md
+@@ -53,7 +53,32 @@
+ 在新配置的 `metasr` 下设置 `freeze_meanshift: true`，会冻结 `sub_mean` 和 `add_mean`
+ 的 weight/bias；不改官方代码、网络结构或前向计算。相同权重下输出不变，后续训练更新会不同。
+ 开关随配置保存在 checkpoint 中，评估和 SR 推理加载时自动恢复；旧 checkpoint 缺少该字段时仍默认关闭。
+-训练入口保持几何增强关闭；开启 SR 监督时，未同步到 HR 的非恒等几何变换会报错。
++
++## 可选配对几何增强
++
++增强默认关闭。可在主 YAML 中添加以下字段，或在原训练命令上增加
++`--augmentation-config configs/augmentation_geometry.yaml`，使用独立配置覆盖增强设置：
++
++```yaml
++augmentation:
++  enabled: true
++  horizontal_flip: 0.5
++  vertical_flip: 0.5
++  rotation90: true
++```
++
++每次读取训练 WSI 时，对每个 LR/HR region 对独立抽取一次变换：先水平翻转，
++再垂直翻转，最后从 0°/90°/180°/270° 中等概率抽取逆时针旋转。没有颜色增强。
++参数固定在路径包装中，不随 region micro-batch 划分改变；关闭开关时不额外抽取随机数。
++独立配置只覆盖 `augmentation`，不修改分类头、RDN 深度、损失系数或优化器参数；
++实际增强设置会写入运行目录的 `config.yaml` 和 checkpoint。
++
++LR 在 CPU 上完成几何变换。SR crop 的 `(top,left,height,width)` 定义在增强后的
++8192×8192 图像上；`paired_geometry.py` 将其逆映射为原始 HR 的裁剪区域，先裁剪，
++再对小 crop 应用相同变换，保证非对齐坐标及边界逐像素对应。HR 图像的文件解码仍在 CPU，
++只将 crop 张量传入 GPU；分类与 SR 共用同一次增强后的 LR 编码，SR=0 时不读取 HR。
++轮末训练集评估使用 `evaluation_view()`；验证集、`eval_e2e.py` 和 `infer_sr.py` 均不增强。
++旧配置未提供 `augmentation` 时保留原路径，不改变网络参数或旧 checkpoint 加载方式。
+ 
+ ## 数据与三折划分
+ 
+diff --git a/E2E_MetaSR/paired_geometry.py b/E2E_MetaSR/paired_geometry.py
+new file mode 100644
+--- /dev/null
++++ b/E2E_MetaSR/paired_geometry.py
+@@ -0,0 +1,32 @@
++"""Read a crop in augmented coordinates without transforming a complete HR image."""
++
++from augmentation import apply_transform
++
++
++def crop_transformed(image, box, params):
++    """Map (top, left, height, width) back to raw pixels, then transform the tile."""
++    top, left, height, width = box
++    source_width, source_height = image.size
++    k = params.rotation_k
++    target_width, target_height = ((source_height, source_width) if k % 2
++                                   else (source_width, source_height))
++    if (height <= 0 or width <= 0 or top < 0 or left < 0
++            or top + height > target_height or left + width > target_width):
++        raise ValueError("Invalid HR crop")
++
++    # Invert the final counterclockwise rotation using half-open pixel bounds.
++    right, bottom = left + width, top + height
++    if k == 1:
++        left, top, right, bottom = source_width - bottom, left, source_width - top, right
++    elif k == 2:
++        left, top, right, bottom = (source_width - right, source_height - bottom,
++                                   source_width - left, source_height - top)
++    elif k == 3:
++        left, top, right, bottom = top, source_height - right, bottom, source_height - left
++
++    # The forward order is horizontal flip, vertical flip, then rotation.
++    if params.vertical_flip:
++        top, bottom = source_height - bottom, source_height - top
++    if params.horizontal_flip:
++        left, right = source_width - right, source_width - left
++    return apply_transform(image.crop((left, top, right, bottom)), params)
+diff --git a/E2E_MetaSR/configs/augmentation_geometry.yaml b/E2E_MetaSR/configs/augmentation_geometry.yaml
+new file mode 100644
+--- /dev/null
++++ b/E2E_MetaSR/configs/augmentation_geometry.yaml
+@@ -0,0 +1,6 @@
++# Optional training-only geometry; pass with --augmentation-config.
++augmentation:
++  enabled: true
++  horizontal_flip: 0.5
++  vertical_flip: 0.5
++  rotation90: true
+diff --git a/E2E_MetaSR/tests/test_paired_geometry.py b/E2E_MetaSR/tests/test_paired_geometry.py
+new file mode 100644
+--- /dev/null
++++ b/E2E_MetaSR/tests/test_paired_geometry.py
+@@ -0,0 +1,82 @@
++import itertools
++import unittest
++from unittest.mock import patch
++
++import numpy as np
++from PIL import Image
++
++from augmentation import TransformParams, apply_transform
++from paired_geometry import crop_transformed
++
++
++class PairedGeometryTests(unittest.TestCase):
++    def test_all_rectangles_match_full_transform_with_unique_pixel_coordinates(self):
++        image = Image.fromarray(np.arange(15, dtype=np.int32).reshape(3, 5))
++        for horizontal, vertical, k in itertools.product((False, True), (False, True), range(4)):
++            params = TransformParams(horizontal, vertical, k)
++            transformed = apply_transform(image, params)
++            width, height = transformed.size
++            for top in range(height):
++                for left in range(width):
++                    for bottom in range(top + 1, height + 1):
++                        for right in range(left + 1, width + 1):
++                            box = (top, left, bottom - top, right - left)
++                            with self.subTest(params=params, box=box):
++                                actual = crop_transformed(image, box, params)
++                                expected = transformed.crop((left, top, right, bottom))
++                                np.testing.assert_array_equal(np.asarray(actual), np.asarray(expected))
++
++    def test_scale32_absolute_coordinates_match_transformed_lr_at_8k_boundaries(self):
++        # A virtual 8K nearest-neighbor coordinate chart materializes only each
++        # requested raw crop; the 256x256 LR chart is the independent oracle.
++        class CoordinateImage:
++            size = (8192, 8192)
++
++            def crop(self, bounds):
++                left, top, right, bottom = bounds
++                rows = np.arange(top, bottom, dtype=np.int32)[:, None] // 32
++                columns = np.arange(left, right, dtype=np.int32)[None, :] // 32
++                return Image.fromarray(rows * 256 + columns)
++
++        lr = Image.fromarray(np.arange(256 * 256, dtype=np.int32).reshape(256, 256))
++        boxes = ((0, 0, 1, 1), (8191, 8191, 1, 1), (31, 17, 33, 71),
++                 (7936, 7936, 256, 256), (8173, 0, 19, 25), (0, 8183, 31, 9))
++        for horizontal, vertical, k in itertools.product((False, True), (False, True), range(4)):
++            params = TransformParams(horizontal, vertical, k)
++            transformed_lr = np.asarray(apply_transform(lr, params))
++            for box in boxes:
++                top, left, height, width = box
++                expected = transformed_lr[
++                    np.arange(top, top + height)[:, None] // 32,
++                    np.arange(left, left + width)[None, :] // 32,
++                ]
++                with self.subTest(params=params, box=box), \
++                        patch("paired_geometry.apply_transform", wraps=apply_transform) as transform:
++                    actual = crop_transformed(CoordinateImage(), box, params)
++                    np.testing.assert_array_equal(np.asarray(actual), expected)
++                    self.assertEqual(transform.call_count, 1)
++                    tile = transform.call_args.args[0]
++                    self.assertEqual(tile.width * tile.height, width * height)
++
++    def test_disabled_transform_is_identical_to_raw_crop(self):
++        image = Image.fromarray(np.arange(3 * 7 * 11, dtype=np.uint8).reshape(7, 11, 3))
++        box = (1, 3, 5, 8)
++        actual = crop_transformed(image, box, TransformParams(False, False, 0))
++        expected = image.crop((3, 1, 11, 6))
++        np.testing.assert_array_equal(np.asarray(actual), np.asarray(expected))
++
++    def test_rejects_invalid_boxes_in_transformed_coordinate_space(self):
++        image = Image.new("RGB", (7, 3))
++        for horizontal, vertical, k in itertools.product((False, True), (False, True), range(4)):
++            params = TransformParams(horizontal, vertical, k)
++            width, height = apply_transform(image, params).size
++            boxes = ((-1, 0, 1, 1), (0, -1, 1, 1), (0, 0, 0, 1), (0, 0, 1, 0),
++                     (0, 0, -1, 1), (0, 0, 1, -1), (height, 0, 1, 1),
++                     (0, width, 1, 1), (0, 0, height + 1, 1), (0, 0, 1, width + 1))
++            for box in boxes:
++                with self.subTest(params=params, box=box), self.assertRaises(ValueError):
++                    crop_transformed(image, box, params)
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/E2E_MetaSR/tests/test_paired_augmentation.py b/E2E_MetaSR/tests/test_paired_augmentation.py
+new file mode 100644
+--- /dev/null
++++ b/E2E_MetaSR/tests/test_paired_augmentation.py
+@@ -0,0 +1,272 @@
++"""Small CPU fixtures exercise real paired loading, decoder and WSI gradients."""
++
++import io
++import random
++import tempfile
++import unittest
++from pathlib import Path
++from unittest.mock import patch
++
++import numpy as np
++import torch
++from PIL import Image
++
++import eval_e2e
++import infer_sr
++import train_e2e
++from augmentation import AugmentationConfig, AugmentedPath, TransformParams
++from engine import evaluate, load_hr_crops, wsi_loss
++from models.baseline import MetaSRABMIL, model_from_checkpoint
++from train_e2e import load_config, provenance
++from wsi_data import Camelyon16WSI, load_fold_datasets, load_images
++
++
++class PairedAugmentationTests(unittest.TestCase):
++    def setUp(self):
++        torch.set_num_threads(4)
++        torch.manual_seed(123)
++        self.temp = tempfile.TemporaryDirectory()
++        self.addCleanup(self.temp.cleanup)
++        self.root = Path(self.temp.name)
++        self.sample = {"slide_id": "slide0", "case_id": "case0", "label": 1,
++                       "n_regions": 3, "lr_paths": [], "hr_paths": []}
++        y, x = np.indices((8, 8))
++        for region in range(3):
++            pixels = np.stack((x * 29, y * 31, (x + y + region * 3) * 11), axis=-1).astype(np.uint8)
++            for directory, array in (("images_256", pixels),
++                                     ("images_8192", pixels.repeat(32, 0).repeat(32, 1))):
++                path = self.root / directory / f"region{region}.png"
++                path.parent.mkdir(exist_ok=True)
++                Image.fromarray(array).save(path)
++                self.sample["lr_paths" if directory == "images_256" else "hr_paths"].append(path)
++        self.config = {"classification_encoder": "spp", "metasr": {"rdn_blocks": 1, "scale": 32},
++                       "training": {"use_region_microbatch": False, "region_microbatch_size": 1},
++                       "precision": "fp32", "lambda_sr": 0.1, "sr_train_crop": 8}
++
++    def model(self):
++        return MetaSRABMIL(classification_encoder="spp", rdn_blocks=1, scale=32).train()
++
++    def loss(self, model, sample):
++        # Keep production scale=32 and all real PIL/model operations, using 8 -> 256
++        # fixtures instead of 256 -> 8192; sample origin, unaligned and far edge crops.
++        with patch("engine.load_images", side_effect=lambda paths, size: load_images(paths, 8)), \
++             patch("engine.load_hr_crops", side_effect=lambda paths, box: load_hr_crops(paths, box, 256)), \
++             patch("engine.torch.randint", return_value=torch.tensor([[0, 0], [7, 13], [248, 248]])), \
++             patch("wsi_data.generate_transform_params", side_effect=AssertionError("Resampled during batching")):
++            return wsi_loss(model, sample, torch.device("cpu"), self.config)
++
++    def folds(self, require_hr=True):
++        records = {
++            "manifests/patch_manifest.csv": ("filename,slide_id", "region0.png,slide0\nregion1.png,slide1\nregion2.png,slide2"),
++            "downstream_train/camelyon16_labels.csv": ("case_id,slide_id,label", "case0,slide0,1\ncase1,slide1,0\ncase2,slide2,1"),
++            "downstream_train/splits_0.csv": ("train,val", "case0,case1\n,case2"),
++        }
++        for name, (header, rows) in records.items():
++            path = self.root / name
++            path.parent.mkdir(exist_ok=True)
++            path.write_text(header + "\n" + rows + "\n", encoding="utf-8")
++        return load_fold_datasets(self.root, 0, augmentation={"enabled": True}, require_hr=require_hr)
++
++    def test_yaml_default_and_enabled_validation(self):
++        baseline = Path(__file__).resolve().parents[1] / "configs/baseline.yaml"
++        original = load_config(baseline)
++        self.assertFalse(AugmentationConfig(**original.get("augmentation", {})).enabled)
++        selected = dict(original, augmentation={"enabled": True, "horizontal_flip": 1.0})
++        with patch("train_e2e.yaml.safe_load", return_value=selected):
++            self.assertTrue(load_config(baseline)["augmentation"]["enabled"])
++        for invalid in ({"enabled": "false"}, {"horizontal_flip": -0.1}, {"vertical_flip": 1.1},
++                        {"rotation90": 1}):
++            with self.subTest(invalid=invalid), \
++                 patch("train_e2e.yaml.safe_load", return_value=dict(original, augmentation=invalid)), \
++                 self.assertRaises(ValueError):
++                load_config(baseline)
++
++    def test_training_entry_forwards_yaml_or_standalone_augmentation(self):
++        baseline = Path(__file__).resolve().parents[1] / "configs/baseline.yaml"
++        override = self.root / "augmentation.yaml"
++        override.write_text("augmentation:\n  enabled: false\n", encoding="utf-8")
++        for index, (enabled, standalone) in enumerate(((None, False), (True, False), (True, True))):
++            config = load_config(baseline)
++            if enabled is not None:
++                config["augmentation"] = {"enabled": enabled}
++            argv = ["train_e2e.py", "--data-root", str(self.root), "--output", str(self.root / f"run{index}"),
++                    "--device", "cpu"]
++            if standalone:
++                argv += ["--augmentation-config", str(override)]
++            with self.subTest(enabled=enabled, standalone=standalone), \
++                 patch("sys.argv", argv), patch("train_e2e.load_config", return_value=config), \
++                 patch("train_e2e.run_equivalence", return_value={"selected_config": "synthetic fixture"}), \
++                 patch("train_e2e.load_fold_datasets", side_effect=RuntimeError("dataset reached")) as loader, \
++                 patch("sys.stdout", new_callable=io.StringIO), \
++                 self.assertRaisesRegex(RuntimeError, "dataset reached"):
++                train_e2e.main()
++            selected = loader.call_args.kwargs.get("augmentation")
++            self.assertEqual(selected.get("enabled") if selected else None, False if standalone else enabled)
++
++    def test_sampling_is_lazy_paired_and_training_only(self):
++        train, val = self.folds()
++        with patch("wsi_data.Image.open", side_effect=AssertionError("Eager image decoding")):
++            sample = train[0]
++            self.assertIsInstance(sample["lr_paths"][0], AugmentedPath)
++            self.assertIs(sample["lr_paths"][0].params, sample["hr_paths"][0].params)
++            for dataset in (train.evaluation_view(), val):
++                before = random.getstate()
++                plain = dataset[0]
++                self.assertEqual(random.getstate(), before)
++                self.assertIsInstance(plain["lr_paths"][0], Path)
++                self.assertIsInstance(plain["hr_paths"][0], Path)
++        self.assertIsInstance(train.samples[0]["lr_paths"][0], Path)
++
++    def test_lr_and_hr_loaders_share_augmented_coordinates(self):
++        params = TransformParams(True, False, 1)
++        lr = load_images([AugmentedPath(self.sample["lr_paths"][0], params)], 8)
++        expanded = lr.repeat_interleave(32, -2).repeat_interleave(32, -1)
++        for box in ((0, 0, 8, 8), (7, 13, 19, 37), (248, 249, 8, 7)):
++            with self.subTest(box=box):
++                y, x, h, w = box
++                truth = load_hr_crops([AugmentedPath(self.sample["hr_paths"][0], params)], box, 256)
++                self.assertEqual(tuple(truth.shape), (1, 3, h, w))
++                torch.testing.assert_close(truth, expanded[:, :, y:y+h, x:x+w], atol=0, rtol=0)
++
++    def test_joint_gradients_and_geometry_independent_of_microbatch(self):
++        dataset = Camelyon16WSI([self.sample], augmentation={"enabled": True})
++        model = self.model()
++        for coefficient in (0, 0.1):
++            self.config["lambda_sr"] = coefficient
++            reference = None
++            for micro, size in ((False, 1), (True, 1), (True, 2)):
++                with self.subTest(lambda_sr=coefficient, micro=micro, size=size):
++                    random.seed(72)
++                    sample = dataset[0]
++                    rng = random.getstate()
++                    model.zero_grad(set_to_none=True)
++                    self.config["training"] = {"use_region_microbatch": micro, "region_microbatch_size": size}
++                    result = self.loss(model, sample)
++                    self.assertEqual(random.getstate(), rng)
++                    result[0].backward()
++                    gradients = {name: p.grad.clone() for name, p in model.named_parameters() if p.grad is not None}
++                    self.assertTrue(all(torch.isfinite(value).all() for value in gradients.values()))
++                    for name in ("sr.SFENet1.weight", "sr.RDBs.0.LFF.weight", "mil_head.attention_V.weight", "classifier.weight"):
++                        self.assertTrue(torch.isfinite(gradients[name]).all())
++                        self.assertGreater(gradients[name].abs().sum().item(), 0)
++                    if coefficient:
++                        self.assertGreater(result[2].item(), 0)
++                        self.assertGreater(gradients["sr.P2W.meta_block.2.weight"].abs().sum().item(), 0)
++                    else:
++                        self.assertEqual(result[2].item(), 0)
++                        self.assertTrue(all(p.grad is None for p in model.sr.P2W.parameters()))
++                    if reference is None:
++                        reference = (sample, [value.detach().clone() for value in result], gradients)
++                    else:
++                        self.assertEqual(sample, reference[0])
++                        for actual, expected in zip(result, reference[1]):
++                            torch.testing.assert_close(actual, expected, atol=2e-5, rtol=2e-4)
++                        self.assertEqual(gradients.keys(), reference[2].keys())
++                        for name, value in gradients.items():
++                            torch.testing.assert_close(value, reference[2][name], atol=2e-5, rtol=2e-4)
++
++    def test_disabled_preserves_plain_paths_rng_losses_and_gradients(self):
++        model = self.model()
++        for coefficient in (0, 0.1):
++            self.config["lambda_sr"] = coefficient
++            reference = None
++            for augmentation in (None, {"enabled": False, "horizontal_flip": 1, "vertical_flip": 1}):
++                with self.subTest(lambda_sr=coefficient, augmentation=augmentation):
++                    dataset = Camelyon16WSI([self.sample], augmentation=augmentation)
++                    rng = random.getstate()
++                    sample = dataset[0]
++                    self.assertIs(sample, self.sample)
++                    self.assertEqual(random.getstate(), rng)
++                    model.zero_grad(set_to_none=True)
++                    result = self.loss(model, sample)
++                    result[0].backward()
++                    gradients = {name: p.grad.clone() for name, p in model.named_parameters() if p.grad is not None}
++                    if reference is None:
++                        reference = ([value.detach().clone() for value in result], gradients)
++                    else:
++                        for actual, expected in zip(result, reference[0]):
++                            torch.testing.assert_close(actual, expected, atol=0, rtol=0)
++                        for name, value in gradients.items():
++                            torch.testing.assert_close(value, reference[1][name], atol=0, rtol=0)
++
++    def test_sr_off_never_reads_hr_or_samples_crop(self):
++        for path in self.sample["hr_paths"]:
++            path.unlink()
++        train, _ = self.folds(require_hr=False)
++        model = self.model()
++        self.config["lambda_sr"] = 0
++        with patch("engine.load_images", side_effect=lambda paths, size: load_images(paths, 8)), \
++             patch("engine.load_hr_crops", side_effect=AssertionError("Read HR with SR off")), \
++             patch("engine.torch.randint", side_effect=AssertionError("Sampled SR crop with SR off")), \
++             patch.object(model.sr, "decode_crop", side_effect=AssertionError("Decoded SR with SR off")):
++            result = wsi_loss(model, train[0], torch.device("cpu"), self.config)
++            result[0].backward()
++        self.assertEqual(result[2].item(), 0)
++
++    def test_offline_train_val_and_standalone_eval_do_not_augment(self):
++        train, val = self.folds()
++        model = self.model()
++        self.config["augmentation"] = {"enabled": True}
++        state = {name: value.clone() for name, value in model.state_dict().items()}
++
++        def plain_images(paths, size):
++            self.assertTrue(all(isinstance(path, Path) for path in paths))
++            self.assertFalse(torch.is_grad_enabled())
++            self.assertFalse(model.training)
++            return load_images(paths, 8)
++
++        with patch("engine.load_images", side_effect=plain_images), \
++             patch("engine.load_hr_crops", side_effect=AssertionError("Evaluation read HR")), \
++             patch("wsi_data.generate_transform_params", side_effect=AssertionError("Evaluation sampled geometry")):
++            train_samples = list(train.evaluation_view())
++            evaluate(model, train_samples + [dict(train_samples[0], label=0)], torch.device("cpu"), self.config)
++            evaluate(model, val, torch.device("cpu"), self.config)
++            saved = {"config": self.config, "fold": 0, "data_provenance": provenance(self.root, val)}
++            with patch("sys.argv", ["eval_e2e.py", "--checkpoint", "unused.pth", "--data-root", str(self.root),
++                                    "--labels-csv", str(val.labels_csv), "--split-dir", str(val.split_csv.parent),
++                                    "--device", "cpu"]), \
++                 patch("eval_e2e.torch.load", return_value=saved), \
++                 patch("eval_e2e.model_from_checkpoint", return_value=model), \
++                 patch("sys.stdout", new_callable=io.StringIO):
++                eval_e2e.main()
++        self.assertTrue(all(p.grad is None for p in model.parameters()))
++        for name, value in model.state_dict().items():
++            torch.testing.assert_close(value, state[name], atol=0, rtol=0)
++
++    def test_sr_inference_passes_plain_image_with_augmented_training_config(self):
++        path = self.sample["lr_paths"][0]
++        model = self.model()
++        self.config["augmentation"] = {"enabled": True}
++        with patch("sys.argv", ["infer_sr.py", "--checkpoint", "unused.pth", "--lr-image", str(path),
++                                "--output", str(self.root / "sr.npy"), "--device", "cpu"]), \
++             patch("infer_sr.torch.load", return_value={"config": self.config}), \
++             patch("infer_sr.model_from_checkpoint", return_value=model), \
++             patch("infer_sr.load_images", side_effect=lambda paths, size: load_images(paths, 8)) as loader, \
++             patch("infer_sr.reconstruct") as reconstruct, \
++             patch("wsi_data.generate_transform_params", side_effect=AssertionError("Inference sampled geometry")), \
++             patch("sys.stdout", new_callable=io.StringIO):
++            infer_sr.main()
++        loader.assert_called_once_with([path], 256)
++        self.assertFalse(model.training)
++        torch.testing.assert_close(reconstruct.call_args.args[1], load_images([path], 8), atol=0, rtol=0)
++
++    def test_checkpoint_config_does_not_change_model_or_inference(self):
++        model = self.model().eval()
++        images = load_images(self.sample["lr_paths"], 8)
++        with torch.no_grad():
++            expected = model(images)
++            for enabled in (None, False, True):
++                config = dict(self.config)
++                if enabled is not None:
++                    config["augmentation"] = {"enabled": enabled}
++                saved = {"format": "metasr-abmil-v2", "architecture": model.architecture(),
++                         "config": config, "model_state": model.state_dict()}
++                with self.subTest(enabled=enabled):
++                    restored = model_from_checkpoint(saved).eval()
++                    torch.testing.assert_close(restored(images), expected, atol=0, rtol=0)
++                    for name, value in restored.state_dict().items():
++                        torch.testing.assert_close(value, saved["model_state"][name], atol=0, rtol=0)
++
++
++if __name__ == "__main__":
++    unittest.main()

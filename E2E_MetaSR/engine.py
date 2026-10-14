@@ -1,6 +1,7 @@
 """One complete WSI with an optional region micro-batch and one Adam step."""
 
 import math
+import os
 
 import numpy as np
 import torch
@@ -9,6 +10,7 @@ from PIL import Image
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score
 
 from augmentation import AugmentedPath
+from paired_geometry import crop_transformed
 from wsi_data import load_images
 
 
@@ -22,12 +24,14 @@ def load_hr_crops(paths, box, size=8192):
     y, x, h, w = box
     crops = []
     for path in paths:
-        with Image.open(path) as image:
+        with Image.open(os.fspath(path)) as image:
             if image.size != (size, size):
                 raise ValueError(f"{path}: expected HR {(size, size)}, got {image.size}")
             if min(y, x) < 0 or min(h, w) < 1 or y+h > size or x+w > size:
                 raise ValueError("Invalid HR crop")
-            array = np.array(image.crop((x, y, x+w, y+h)).convert("RGB"), dtype=np.uint8)
+            crop = (crop_transformed(image, box, path.params) if isinstance(path, AugmentedPath)
+                    else image.crop((x, y, x+w, y+h)))
+            array = np.array(crop.convert("RGB"), dtype=np.uint8)
         crops.append(torch.from_numpy(array).permute(2, 0, 1).float().div_(255))
     return torch.stack(crops)
 
@@ -45,14 +49,6 @@ def wsi_loss(model, sample, device, config):
     batch_size = region_batch_size(config, n)
     coefficient = config["lambda_sr"]
     if coefficient:
-        for path in sample["lr_paths"] + sample["hr_paths"]:
-            if isinstance(path, AugmentedPath):
-                params = path.params
-                if (params.horizontal_flip != params.vertical_flip
-                        or (params.rotation_k + 2 * int(params.horizontal_flip)) % 4):
-                    raise ValueError("SR supervision cannot use geometric augmentation: "
-                                     "HR crops are not transformed to match augmented regions. "
-                                     "Disable geometry or set lambda_sr=0.")
         crop = config["sr_train_crop"]
         # Sample once per region before batching, so batching does not change the crops.
         boxes = [(y, x, crop, crop)

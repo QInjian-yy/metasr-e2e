@@ -7,6 +7,7 @@ import json
 import math
 import random
 import subprocess
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
@@ -16,6 +17,7 @@ import torch
 import yaml
 from torch.utils.data import DataLoader
 
+from augmentation import AugmentationConfig, load_augmentation_config
 from engine import evaluate, train_wsi
 from experiments.summarize import summarize
 from models.baseline import MetaSRABMIL
@@ -30,6 +32,11 @@ def load_config(path):
     config.setdefault("classification_encoder", "resnet18")
     if config["classification_encoder"] not in ("resnet18", "spp"):
         raise ValueError("classification_encoder must be resnet18 or spp")
+    config.setdefault("classification_head", "linear")
+    if config["classification_head"] not in ("linear", "mlp"):
+        raise ValueError("classification_head must be linear or mlp")
+    if config["classification_head"] == "mlp" and config["classification_encoder"] != "spp":
+        raise ValueError("classification_head=mlp requires classification_encoder=spp")
     if config["metasr"]["scale"] != 32 or config["metasr"]["rgb_range"] != 1:
         raise ValueError("This dataset uses 256 -> 8192 and RGB in [0,1]: scale=32, rgb_range=1")
     if config["precision"] not in ("fp32", "bf16"):
@@ -56,6 +63,10 @@ def load_config(path):
         raise ValueError("Training requires a crop smaller than 8192; use infer_sr.py for full reconstruction")
     if not math.isfinite(config["lambda_sr"]) or config["lambda_sr"] < 0:
         raise ValueError("lambda_sr must be finite and nonnegative")
+    augmentation = config.get("augmentation", {})
+    if not isinstance(augmentation, dict):
+        raise ValueError("augmentation must be a mapping")
+    AugmentationConfig(**augmentation)
     return config
 
 
@@ -83,6 +94,8 @@ def run_metadata(fold, device):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=ROOT / "configs/baseline.yaml")
+    parser.add_argument("--augmentation-config", type=Path,
+                        help="Optional geometry YAML; overrides the main config's augmentation mapping")
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--fold", type=int, default=0)
     parser.add_argument("--labels-csv", type=Path, default=ROOT / "downstream_train/camelyon16_labels.csv")
@@ -91,6 +104,8 @@ def main():
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
     config = load_config(args.config)
+    if args.augmentation_config is not None:
+        config["augmentation"] = asdict(load_augmentation_config(args.augmentation_config))
     device = torch.device(args.device)
     if device.type == "cuda":
         torch.cuda.set_device(device)
@@ -110,12 +125,13 @@ def main():
     torch.cuda.manual_seed_all(config["seed"])
     torch.backends.cudnn.benchmark = False
     train_data, val_data = load_fold_datasets(args.data_root, args.fold, args.labels_csv,
-        args.split_dir, require_hr=config["lambda_sr"] > 0)
+        args.split_dir, require_hr=config["lambda_sr"] > 0, augmentation=config.get("augmentation"))
     if set(sample["label"] for sample in val_data.samples) != {0, 1}:
         raise ValueError("Validation needs both classes for val_auc checkpoint selection")
     loaders = [DataLoader(data, batch_size=1, shuffle=shuffle, collate_fn=collate_one_wsi)
                for data, shuffle in ((train_data, True), (train_data.evaluation_view(), False), (val_data, False))]
     model = MetaSRABMIL(classification_encoder=config["classification_encoder"],
+                       classification_head=config.get("classification_head", "linear"),
                        **config["metasr"]).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"], weight_decay=config["weight_decay"])
     data_info = provenance(args.data_root, train_data)
@@ -140,6 +156,7 @@ def main():
             row = {"epoch": epoch, **{key: sum(r[key] for r in online) / len(online)
                    for key in ("train_loss_cls", "train_loss_sr", "train_loss_total")},
                    **{"train_"+key: train_result[key] for key in ("auc", "acc", "bacc")},
+                   "train_eval_loss": train_result["loss"],
                    **{"val_"+key: val_result[key] for key in ("loss", "auc", "acc", "bacc")},
                    **{key: max((r[key] or 0) for r in online)
                       for key in ("max_memory_allocated", "max_memory_reserved")}}

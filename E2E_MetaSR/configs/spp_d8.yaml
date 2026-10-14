@@ -12,8 +12,8 @@ training:
   use_region_microbatch: false
   region_microbatch_size: 1
 precision: bf16
-lr: 1.0e-5
-weight_decay: 1.0e-4
+lr: 1.0e-4
+weight_decay: 0.0
 epochs: 100
 early_stopping_patience: 15
 seed: 1

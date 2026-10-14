@@ -12,6 +12,7 @@
 | 配置 | 分类分支 | RDB 数 D |
 |---|---|---:|
 | `configs/spp_d8.yaml` | SPP，较小的 RDN 配置 | 8 |
+| `configs/spp_d8_mlp.yaml` | SPP，ABMIL 后接 128 维 MLP 分类头 | 8 |
 | `configs/spp.yaml` | SPP | 16 |
 | `configs/baseline.yaml` | ResNet18-GN | 16 |
 | `configs/rdn_d8.yaml` | ResNet18-GN | 8 |
@@ -32,6 +33,18 @@ SPP 分类路径：
   → Linear(3200,2) → logits [1,2]
 ```
 
+顶层配置 `classification_head` 默认为 `linear`，保留原分类头及旧权重键名。
+SPP 可选择 `classification_head: mlp`，仅将 ABMIL 后的分类头改为
+`Linear(3200,128) → ReLU → nn.Dropout(0.3) → Linear(128,2)`。
+该选项只支持 `classification_encoder: spp`，不改变 RDN、SPP、ABMIL 或 SR 分支。
+新配置 `configs/spp_d8_mlp.yaml` 沿用已记录的 D8 / lr=1e-4 / WD=1e-4 /
+SR=0 / MeanShift 冻结 / BF16 / 整批设置，仅新增 MLP 分类头；运行时指定新的输出目录。
+
+每次 `train_wsi` 都调用 `model.train()`，开启 Dropout；轮末训练集评估、验证集评估
+以及 `eval_e2e.py` 独立评估共用 `model.eval()` 和 `torch.no_grad()`，关闭 Dropout 且不更新参数。
+下一轮首个训练步骤自动恢复训练模式。自行加载 checkpoint 推理时，同样需要
+先调用 `model.eval()`，并在 `torch.no_grad()` 中执行前向。
+
 SPP 没有可学习参数，没有 ResNet 实例、额外投影、归一化或激活。
 SR 分支使用同一次编码得到的完整 feature，以绝对 HR 坐标查询每个 region 的 HR crop。
 scale=32，LR/HR 图像为 RGB [0,1]。完整 8K SR 推理复用完整 feature，在 no_grad 下逐块解码并写入 memmap。
@@ -40,7 +53,32 @@ scale=32，LR/HR 图像为 RGB [0,1]。完整 8K SR 推理复用完整 feature�
 在新配置的 `metasr` 下设置 `freeze_meanshift: true`，会冻结 `sub_mean` 和 `add_mean`
 的 weight/bias；不改官方代码、网络结构或前向计算。相同权重下输出不变，后续训练更新会不同。
 开关随配置保存在 checkpoint 中，评估和 SR 推理加载时自动恢复；旧 checkpoint 缺少该字段时仍默认关闭。
-训练入口保持几何增强关闭；开启 SR 监督时，未同步到 HR 的非恒等几何变换会报错。
+
+## 可选配对几何增强
+
+增强默认关闭。可在主 YAML 中添加以下字段，或在原训练命令上增加
+`--augmentation-config configs/augmentation_geometry.yaml`，使用独立配置覆盖增强设置：
+
+```yaml
+augmentation:
+  enabled: true
+  horizontal_flip: 0.5
+  vertical_flip: 0.5
+  rotation90: true
+```
+
+每次读取训练 WSI 时，对每个 LR/HR region 对独立抽取一次变换：先水平翻转，
+再垂直翻转，最后从 0°/90°/180°/270° 中等概率抽取逆时针旋转。没有颜色增强。
+参数固定在路径包装中，不随 region micro-batch 划分改变；关闭开关时不额外抽取随机数。
+独立配置只覆盖 `augmentation`，不修改分类头、RDN 深度、损失系数或优化器参数；
+实际增强设置会写入运行目录的 `config.yaml` 和 checkpoint。
+
+LR 在 CPU 上完成几何变换。SR crop 的 `(top,left,height,width)` 定义在增强后的
+8192×8192 图像上；`paired_geometry.py` 将其逆映射为原始 HR 的裁剪区域，先裁剪，
+再对小 crop 应用相同变换，保证非对齐坐标及边界逐像素对应。HR 图像的文件解码仍在 CPU，
+只将 crop 张量传入 GPU；分类与 SR 共用同一次增强后的 LR 编码，SR=0 时不读取 HR。
+轮末训练集评估使用 `evaluation_view()`；验证集、`eval_e2e.py` 和 `infer_sr.py` 均不增强。
+旧配置未提供 `augmentation` 时保留原路径，不改变网络参数或旧 checkpoint 加载方式。
 
 ## 数据与三折划分
 
@@ -121,12 +159,17 @@ BF16 整批与分批可能存在数值差异，不能直接认定为等价。
 
 `history.csv` 保存每轮在线分类/SR/总损失、离线 train/val AUC、ACC、BACC、
 验证分类 loss 和训练 step 峰值显存。显存单位为字节，除以 2**30 得到 GiB。
+新运行额外记录 `train_eval_loss`：轮末固定模型、Dropout 关闭时的训练集分类 CE，
+与 `val_loss` 使用同一评估计算方式。原 `train_loss_cls/sr/total` 仍是训练步骤的在线均值
+（MLP 头训练时 Dropout 开启）；原指标含义不变，旧 CSV 不会改写。
 输出还包括 `config.yaml`、`data_provenance.json`、`equivalence.json`、`run_info.json`、
 `last.pth`、`best.pth`、`best_val_predictions.csv`。
-最优 checkpoint 按 val_auc 选择；`spp_d8.yaml` 最多 100 epochs、patience=15，其他现有配置仍为 20/5。
+最优 checkpoint 按 val_auc 选择；`spp_d8.yaml` 和 `spp_d8_mlp.yaml` 最多 100 epochs、patience=15，其他现有配置仍为 20/5。
 
 新 checkpoint 格式 `metasr-abmil-v2` 明确保存分类结构与维度；
 评估和 SR 推理据此构造模型并严格加载。旧 `metasr-abmil-v1` 明确使用 ResNet18。
+MLP checkpoint 在配置中记录分类头类型，并在 architecture 中记录类型、隐藏维度及 Dropout 概率；
+旧 checkpoint 缺少分类头选项时按 `linear` 加载，仍保留严格的 state_dict 检查。
 未知结构、配置冲突、缺失键或尺寸不符均报错。
 D16/D8/D4 的 RDB/GFF 权重形状不同，不能跨深度直接严格加载整个模型。
 当前没有旧权重迁移入口；新 SPP 实验从随机初始化建立模型与 Adam。

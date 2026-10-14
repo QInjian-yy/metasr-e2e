@@ -28,7 +28,7 @@ class TrainingRecordTests(unittest.TestCase):
             model.architecture = lambda: {"synthetic_test": True}
             online = {"train_loss_cls": 0.25, "train_loss_sr": 0.1, "train_loss_total": 0.26,
                       "max_memory_allocated": None, "max_memory_reserved": None}
-            evaluated = {"loss": 0.25, "auc": 0.9, "acc": 0.5, "bacc": 0.5,
+            evaluated = {"loss": 0.125, "auc": 0.9, "acc": 0.5, "bacc": 0.5,
                          "predictions": [{"slide_id": "test", "label": 0, "probability": 0.5}]}
             with ExitStack() as stack:
                 replacements = {
@@ -72,6 +72,14 @@ class TrainingRecordTests(unittest.TestCase):
             self.assertTrue(Path(rows[0]["record_file"]).is_file())
             self.assertTrue((run / "best.pth").is_file())
             self.assertEqual(trainer.call_count, 2 if patience == 1 else epochs)
+            with (run / "history.csv").open(newline="", encoding="utf-8") as handle:
+                history = list(csv.DictReader(handle))
+            for row in history:
+                self.assertEqual(float(row["train_loss_cls"]), online["train_loss_cls"])
+                self.assertEqual(float(row["train_loss_sr"]), online["train_loss_sr"])
+                self.assertEqual(float(row["train_loss_total"]), online["train_loss_total"])
+                self.assertEqual(float(row["train_eval_loss"]), evaluated["loss"])
+                self.assertEqual(float(row["val_loss"]), evaluated["loss"])
 
     def test_normal_finish_records_results(self):
         self.run_entry(epochs=1, patience=5)
