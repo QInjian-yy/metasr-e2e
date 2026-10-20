@@ -7,6 +7,9 @@ from torchvision.models import resnet18
 
 from models.abmil import GatedAttentionMIL
 from models.metasr import MemoryEfficientMetaRDN
+from models.spp_1344 import SpatialPyramidPooling1344
+from models.spp_avg import AverageSpatialPyramidPooling
+from models.spp_ln import LayerNormalizedSPP
 
 
 def _replace_bn_with_gn(module, num_groups=32):
@@ -31,7 +34,7 @@ class SpatialPyramidPooling(nn.Module):
 class MetaSRABMIL(nn.Module):
     def __init__(self, classification_encoder="resnet18", classification_head="linear", **metasr):
         super().__init__()
-        if classification_encoder not in ("resnet18", "spp"):
+        if classification_encoder not in ("resnet18", "spp", "spp_ln", "spp_avg", "spp_1344"):
             raise ValueError(f"Unknown classification_encoder: {classification_encoder}")
         if classification_head not in ("linear", "mlp"):
             raise ValueError(f"Unknown classification_head: {classification_head}")
@@ -40,8 +43,16 @@ class MetaSRABMIL(nn.Module):
         self.classification_encoder = classification_encoder
         self.classification_head = classification_head
         self.sr = MemoryEfficientMetaRDN(**metasr)
-        if classification_encoder == "spp":
+        if classification_encoder == "spp_1344":
+            self.region_encoder = SpatialPyramidPooling1344()
+            input_dim = 64 * (1 + 4 + 16)
+        elif classification_encoder == "spp_avg":
+            self.region_encoder = AverageSpatialPyramidPooling()
+            input_dim = 64 * (1 + 4 + 9 + 36)
+        elif classification_encoder in ("spp", "spp_ln"):
             self.region_encoder = SpatialPyramidPooling()
+            if classification_encoder == "spp_ln":
+                self.region_encoder = LayerNormalizedSPP(self.region_encoder)
             input_dim = 64 * (1 + 4 + 9 + 36)
         else:
             # Copied from E2E/downstream/shared_model.py:SharedE2EModel.__init__.

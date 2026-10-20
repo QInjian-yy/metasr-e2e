@@ -30,8 +30,8 @@ ROOT = Path(__file__).resolve().parent
 def load_config(path):
     config = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
     config.setdefault("classification_encoder", "resnet18")
-    if config["classification_encoder"] not in ("resnet18", "spp"):
-        raise ValueError("classification_encoder must be resnet18 or spp")
+    if config["classification_encoder"] not in ("resnet18", "spp", "spp_ln", "spp_avg", "spp_1344"):
+        raise ValueError("classification_encoder must be resnet18, spp, spp_ln, spp_avg or spp_1344")
     config.setdefault("classification_head", "linear")
     if config["classification_head"] not in ("linear", "mlp"):
         raise ValueError("classification_head must be linear or mlp")
