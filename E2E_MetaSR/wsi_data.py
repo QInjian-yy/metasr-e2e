@@ -18,6 +18,9 @@ from torch.utils.data import Dataset
 
 from augmentation import (AugmentationConfig, AugmentedPath, apply_to_pair,
                           apply_transform, generate_transform_params)
+from data_modes import data_spec
+from native_data import (NATIVE_COLUMNS, load_native_regions, native_manifest_path,
+                         reject_native_legacy)
 
 
 DEFAULT_DATA_ROOT = (
@@ -118,14 +121,19 @@ class Camelyon16WSI(Dataset):
         return dataset
 
 
-def load_fold_datasets(data_root, fold, labels_csv=None, split_dir=None, *, augmentation=None, require_hr=True):
+def load_fold_datasets(data_root, fold, labels_csv=None, split_dir=None, *, augmentation=None,
+                       require_hr=True, data_mode="legacy256", manifest_csv=None):
     """Return (train, val) for one fold.
 
-    Regions come from ``manifests/patch_manifest.csv`` (filename + slide_id only).
+    Legacy regions use ``manifests/patch_manifest.csv`` (filename + slide_id).
+    Explicit native512 mode reads the detailed export CSV and verification report.
     Case train/val comes from ``downstream_train/splits_<fold>.csv`` only.
     Augmentation is opt-in for training use; a train split alone never enables it.
     """
     root = Path(data_root)
+    spec = data_spec({"data_mode": data_mode})
+    if manifest_csv is not None and spec.mode != "native512":
+        raise ValueError("manifest_csv requires explicit native512 mode")
     downstream = root / "downstream_train"
     label_path = _label_path(downstream, labels_csv)
     split_directory = _split_directory(downstream, split_dir)
@@ -149,16 +157,23 @@ def load_fold_datasets(data_root, fold, labels_csv=None, split_dir=None, *, augm
 
     # patch_manifest may carry a legacy SR ``split`` column; E2E ignores it entirely.
     manifest = root / "manifests" / "patch_manifest.csv"
-    regions, filenames = defaultdict(list), set()
-    for row in _read_csv(manifest, ("filename", "slide_id")):
-        slide_id, filename = row["slide_id"], row["filename"]
-        if not slide_id or not filename or "/" in filename or "\\" in filename:
-            raise ValueError("Invalid manifest slide_id/filename: {}".format(row))
-        if filename in filenames:
-            raise ValueError("Duplicate region filename in manifest: {}".format(filename))
-        filenames.add(filename)
-        regions[slide_id].append((root / "images_256" / filename,
-                                  root / "images_8192" / filename))
+    if spec.mode == "native512":
+        manifest = native_manifest_path(root, manifest_csv or "manifests/patch_manifest.csv")
+        regions, verification_path = load_native_regions(
+            root, _read_csv(manifest, NATIVE_COLUMNS), require_hr=require_hr)
+    else:
+        regions, filenames = defaultdict(list), set()
+        rows = _read_csv(manifest, ("filename", "slide_id"))
+        reject_native_legacy(root, rows)
+        for row in rows:
+            slide_id, filename = row["slide_id"], row["filename"]
+            if not slide_id or not filename or "/" in filename or "\\" in filename:
+                raise ValueError("Invalid manifest slide_id/filename: {}".format(row))
+            if filename in filenames:
+                raise ValueError("Duplicate region filename in manifest: {}".format(filename))
+            filenames.add(filename)
+            regions[slide_id].append((root / "images_256" / filename,
+                                      root / "images_8192" / filename))
     missing_labels = set(regions) - set(by_slide)
     missing_regions = set(by_slide) - set(regions)
     if missing_labels:
@@ -202,9 +217,14 @@ def load_fold_datasets(data_root, fold, labels_csv=None, split_dir=None, *, augm
                             )
                 samples.append(dict(label, lr_paths=[pair[0] for pair in pairs],
                                     hr_paths=[pair[1] for pair in pairs], n_regions=len(pairs)))
+                if spec.mode == "native512":
+                    samples[-1]["data_mode"] = spec.mode
         dataset = Camelyon16WSI(samples, augmentation=augmentation if name == "train" else None)
         dataset.labels_csv = label_path
         dataset.split_csv = split_path
+        if spec.mode == "native512":
+            dataset.verification_json = verification_path
+            dataset.manifest_csv = manifest
         datasets.append(dataset)
     return tuple(datasets)
 

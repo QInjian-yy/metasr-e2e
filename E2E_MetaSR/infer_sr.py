@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from data_modes import checkpoint_data_spec
 from engine import autocast, memory_summary
 from models.baseline import model_from_checkpoint
 from wsi_data import load_images
@@ -34,15 +35,16 @@ def main():
     if args.output.exists():
         raise FileExistsError(args.output)
     saved = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
+    spec = checkpoint_data_spec(saved)
     device = torch.device(args.device)
     model = model_from_checkpoint(saved, device).eval()
-    lr = load_images([args.lr_image], 256).to(device)
+    lr = load_images([args.lr_image], spec.lr_size).to(device)
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats(device)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with autocast(device, saved["config"]["precision"]):
         reconstruct(model, lr, args.output)
-    print({"output": str(args.output), "shape": [1, 3, 8192, 8192], **memory_summary(device)})
+    print({"output": str(args.output), "shape": [1, 3, spec.hr_size, spec.hr_size], **memory_summary(device)})
 
 
 if __name__ == "__main__":

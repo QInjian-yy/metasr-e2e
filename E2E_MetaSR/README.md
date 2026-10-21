@@ -187,3 +187,12 @@ D16/D8/D4 的 RDB/GFF 权重形状不同，不能跨深度直接严格加载整�
 无需手填汇总参数。可选补汇总只需 `python -B experiments/summarize.py <输出目录>`。
 历史实验和已有结论不会被覆盖；当前尚无正式训练结果。
 Git 仓库副本继续保留已有审计、测试和历史报告，旧记录不作为新 SPP 的正式结果。
+
+## 可选 native512 数据模式
+
+旧 YAML 缺省仍为 `legacy256`（256→8192、scale=32）。新配置显式使用
+`data_mode: native512`（512→8192、scale=16），并指定详细清单
+`data_manifest: Manifests/patch_manifest.csv`；Linux 上目录大小写有区别。
+新模式默认读取数据根目录自己的 `downstream_train`，原模式默认路径不变。
+配置、完整测试结果、坐标约定、显存限制和待确认后执行的命令见
+[native512 兼容性报告](reports/native512_compatibility_20261021.md)。

@@ -1,0 +1,563 @@
+{
+  "date": "2026-10-21",
+  "base_commit": "cf4e3104c740436e6640586a58b44ffab10002ca",
+  "branch": "codex/native512-scale16",
+  "before_tests": {
+    "passed": 68
+  },
+  "after_tests": {
+    "passed": 103,
+    "seconds": 29.523,
+    "failed": 0,
+    "skipped": 0
+  },
+  "target_metadata": {
+    "root": "D:\\c16_metadata",
+    "regions": 4343,
+    "wsi": 264,
+    "class_counts": {
+      "0": 153,
+      "1": 111
+    },
+    "min_regions": 1,
+    "max_regions": 45,
+    "report_slide_count": 269,
+    "zero_patch_slides": [
+      "normal_016",
+      "normal_019",
+      "normal_027",
+      "normal_042",
+      "normal_045"
+    ],
+    "skipped_slides": [
+      "normal_144"
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "train_wsi": 176,
+        "val_wsi": 88,
+        "train_regions": 2784,
+        "val_regions": 1559
+      },
+      {
+        "fold": 1,
+        "train_wsi": 176,
+        "val_wsi": 88,
+        "train_regions": 2839,
+        "val_regions": 1504
+      },
+      {
+        "fold": 2,
+        "train_wsi": 176,
+        "val_wsi": 88,
+        "train_regions": 3063,
+        "val_regions": 1280
+      }
+    ],
+    "tissue_threshold": 0.2,
+    "jpeg_encoding": {
+      "quality": 90,
+      "subsampling": 0,
+      "optimize": true
+    },
+    "level_downsamples": [
+      2,
+      32
+    ],
+    "pixel_zero_alignment_claimed": false,
+    "hashes": {
+      "Manifests_upper\\patch_manifest.csv": "b93c01f83d2c5b8271181d202748ab6facd9312765e39e00b8204b6cf8b5e3e0",
+      "manifests_lower\\manifests\\patch_manifest.csv": "c8712bcf65c1e6a0f8bb0a39f144e5c9392a2f5c25f69ac4e1b4e60c0b4182bc",
+      "verification\\report.json": "2d837488b58a835dc5f37ec2d3c1857014b7513351218450b1481c8d8528f516",
+      "downstream_train\\camelyon16_labels.csv": "d9994f4c47e93da91c149211eb42bb3efe32fc59a26af667ae3524fc7069e070",
+      "downstream_train\\splits_0.csv": "0a226132e326bad112f4bfb5d36f2e30ab5dece3c6fc72a7471a908c1e6ef162",
+      "downstream_train\\splits_1.csv": "915f359528d4f944eced4e72f6c731b5f9cd17e86d0d9b5191c866c21c641f46",
+      "downstream_train\\splits_2.csv": "a6297c4a947ad62ddad9aafa0becb918a3e7836af88c4c6cf73109bc3b6a81ee"
+    },
+    "image_files_available": false,
+    "full_image_loading": "NOT TESTED"
+  },
+  "real_native_sample": {
+    "root": "D:/ddata/native_jpeg_validation_20261021/mixed_export",
+    "regions": 25,
+    "wsi": 2,
+    "png": 7,
+    "jpeg": 18,
+    "hr_lr_headers": "PASS",
+    "lr_rgb_decode": "PASS",
+    "target_dataset": false
+  },
+  "startup_gate": {
+    "device": "cpu",
+    "dtype": "float32",
+    "official_config": null,
+    "selected_config": "RDN-B/G0=64/D=1/C=8/G=64",
+    "is_official_rdn_b": false,
+    "upsampling": [
+      {
+        "scale": 2,
+        "shape": [
+          1,
+          3,
+          8,
+          10
+        ],
+        "forward_max_abs_error": 1.9073486328125e-06,
+        "parameter_gradient_max_abs_error": 3.5762786865234375e-07
+      },
+      {
+        "scale": 3,
+        "shape": [
+          1,
+          3,
+          12,
+          15
+        ],
+        "forward_max_abs_error": 1.9073486328125e-06,
+        "parameter_gradient_max_abs_error": 4.76837158203125e-07
+      },
+      {
+        "scale": 4,
+        "shape": [
+          1,
+          3,
+          16,
+          20
+        ],
+        "forward_max_abs_error": 3.337860107421875e-06,
+        "parameter_gradient_max_abs_error": 4.76837158203125e-07
+      },
+      {
+        "scale": 16,
+        "shape": [
+          1,
+          3,
+          64,
+          80
+        ],
+        "forward_max_abs_error": 4.76837158203125e-06,
+        "parameter_gradient_max_abs_error": 8.344650268554688e-07
+      }
+    ],
+    "checkpoint": {
+      "feature_shape": [
+        1,
+        64,
+        4,
+        5
+      ],
+      "eval_with_grad_enabled": true,
+      "forward_max_abs_error": 0.0,
+      "input_gradient_max_abs_error": 0.0,
+      "parameter_gradient_max_abs_error": 0.0
+    },
+    "passed": true
+  },
+  "cuda_synthetic_steps": [
+    {
+      "synthetic": true,
+      "config": {
+        "data_mode": "native512",
+        "data_manifest": "Manifests/patch_manifest.csv",
+        "classification_encoder": "spp",
+        "metasr": {
+          "scale": 16,
+          "lr_chunk_size": 256,
+          "checkpoint_rdb": true,
+          "rgb_range": 1,
+          "rdn_blocks": 1,
+          "freeze_meanshift": false
+        },
+        "lambda_sr": 0.0,
+        "sr_train_crop": 256,
+        "training": {
+          "use_region_microbatch": true,
+          "region_microbatch_size": 1
+        },
+        "precision": "bf16",
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "epochs": 100,
+        "early_stopping_patience": 15,
+        "seed": 1,
+        "classification_head": "linear",
+        "augmentation": {
+          "enabled": true,
+          "horizontal_flip": 0.5,
+          "vertical_flip": 0.5,
+          "rotation90": true
+        }
+      },
+      "input_shape": [
+        3,
+        3,
+        512,
+        512
+      ],
+      "mil_inputs": [
+        [
+          3,
+          3200
+        ]
+      ],
+      "device": "cuda:0",
+      "torch": "2.13.0+cu130",
+      "optimizer_steps": 1,
+      "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+      "free_before_bytes": 5351931904,
+      "total_bytes": 6441926656,
+      "status": "passed",
+      "loss_cls": 0.7265625,
+      "loss_sr": 0.0,
+      "loss_total": 0.7265625,
+      "logits": [
+        [
+          0.14453125,
+          0.080078125
+        ]
+      ],
+      "gradients": {
+        "rdn": 1.3780932426452637,
+        "abmil": 0.002266168361529708,
+        "classifier": 26.591461181640625,
+        "p2w": 0.0
+      },
+      "elapsed_seconds": 4.171176600000763,
+      "max_memory_allocated": 2834629632,
+      "max_memory_reserved": 3466592256
+    },
+    {
+      "synthetic": true,
+      "config": {
+        "data_mode": "native512",
+        "data_manifest": "Manifests/patch_manifest.csv",
+        "classification_encoder": "spp",
+        "metasr": {
+          "scale": 16,
+          "lr_chunk_size": 256,
+          "checkpoint_rdb": true,
+          "rgb_range": 1,
+          "rdn_blocks": 1,
+          "freeze_meanshift": false
+        },
+        "lambda_sr": 0.0,
+        "sr_train_crop": 256,
+        "training": {
+          "use_region_microbatch": true,
+          "region_microbatch_size": 2
+        },
+        "precision": "bf16",
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "epochs": 100,
+        "early_stopping_patience": 15,
+        "seed": 1,
+        "classification_head": "linear",
+        "augmentation": {
+          "enabled": true,
+          "horizontal_flip": 0.5,
+          "vertical_flip": 0.5,
+          "rotation90": true
+        }
+      },
+      "input_shape": [
+        3,
+        3,
+        512,
+        512
+      ],
+      "mil_inputs": [
+        [
+          3,
+          3200
+        ]
+      ],
+      "device": "cuda:0",
+      "torch": "2.13.0+cu130",
+      "optimizer_steps": 1,
+      "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+      "free_before_bytes": 5351931904,
+      "total_bytes": 6441926656,
+      "status": "passed",
+      "loss_cls": 0.7265625,
+      "loss_sr": 0.0,
+      "loss_total": 0.7265625,
+      "logits": [
+        [
+          0.14453125,
+          0.080078125
+        ]
+      ],
+      "gradients": {
+        "rdn": 1.3781203031539917,
+        "abmil": 0.002269634511321783,
+        "classifier": 26.591461181640625,
+        "p2w": 0.0
+      },
+      "elapsed_seconds": 7.068983199998911,
+      "max_memory_allocated": 4947981824,
+      "max_memory_reserved": 5712642048
+    },
+    {
+      "synthetic": true,
+      "config": {
+        "data_mode": "native512",
+        "data_manifest": "Manifests/patch_manifest.csv",
+        "classification_encoder": "spp",
+        "metasr": {
+          "scale": 16,
+          "lr_chunk_size": 256,
+          "checkpoint_rdb": true,
+          "rgb_range": 1,
+          "rdn_blocks": 1,
+          "freeze_meanshift": false
+        },
+        "lambda_sr": 0.1,
+        "sr_train_crop": 256,
+        "training": {
+          "use_region_microbatch": true,
+          "region_microbatch_size": 1
+        },
+        "precision": "bf16",
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "epochs": 100,
+        "early_stopping_patience": 15,
+        "seed": 1,
+        "classification_head": "linear",
+        "augmentation": {
+          "enabled": true,
+          "horizontal_flip": 0.5,
+          "vertical_flip": 0.5,
+          "rotation90": true
+        }
+      },
+      "input_shape": [
+        3,
+        3,
+        512,
+        512
+      ],
+      "mil_inputs": [
+        [
+          3,
+          3200
+        ]
+      ],
+      "device": "cuda:0",
+      "torch": "2.13.0+cu130",
+      "optimizer_steps": 1,
+      "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+      "free_before_bytes": 5351931904,
+      "total_bytes": 6441926656,
+      "status": "passed",
+      "loss_cls": 0.494140625,
+      "loss_sr": 0.6843478679656982,
+      "loss_total": 0.5625753998756409,
+      "logits": [
+        [
+          -0.1708984375,
+          0.275390625
+        ]
+      ],
+      "gradients": {
+        "rdn": 1.2097772359848022,
+        "abmil": 0.0005388461868278682,
+        "classifier": 20.270526885986328,
+        "p2w": 0.290878027677536
+      },
+      "elapsed_seconds": 5.245864600001369,
+      "max_memory_allocated": 2898219520,
+      "max_memory_reserved": 3556769792
+    },
+    {
+      "synthetic": true,
+      "config": {
+        "data_mode": "native512",
+        "data_manifest": "Manifests/patch_manifest.csv",
+        "classification_encoder": "spp",
+        "metasr": {
+          "scale": 16,
+          "lr_chunk_size": 256,
+          "checkpoint_rdb": true,
+          "rgb_range": 1,
+          "rdn_blocks": 1,
+          "freeze_meanshift": false
+        },
+        "lambda_sr": 0.0,
+        "sr_train_crop": 256,
+        "training": {
+          "use_region_microbatch": true,
+          "region_microbatch_size": 1
+        },
+        "precision": "fp32",
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "epochs": 100,
+        "early_stopping_patience": 15,
+        "seed": 1,
+        "classification_head": "linear",
+        "augmentation": {
+          "enabled": true,
+          "horizontal_flip": 0.5,
+          "vertical_flip": 0.5,
+          "rotation90": true
+        }
+      },
+      "input_shape": [
+        3,
+        3,
+        512,
+        512
+      ],
+      "mil_inputs": [
+        [
+          3,
+          3200
+        ]
+      ],
+      "device": "cuda:0",
+      "torch": "2.13.0+cu130",
+      "optimizer_steps": 1,
+      "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+      "free_before_bytes": 5351931904,
+      "total_bytes": 6441926656,
+      "status": "passed",
+      "loss_cls": 0.7257798314094543,
+      "loss_sr": 0.0,
+      "loss_total": 0.7257798314094543,
+      "logits": [
+        [
+          0.1439015120267868,
+          0.07966756820678711
+        ]
+      ],
+      "gradients": {
+        "rdn": 1.3809255361557007,
+        "abmil": 0.002281539374962449,
+        "classifier": 26.60457420349121,
+        "p2w": 0.0
+      },
+      "elapsed_seconds": 12.673019699999713,
+      "max_memory_allocated": 5625638912,
+      "max_memory_reserved": 6845104128
+    },
+    {
+      "synthetic": true,
+      "config": {
+        "data_mode": "native512",
+        "data_manifest": "Manifests/patch_manifest.csv",
+        "classification_encoder": "spp_1344",
+        "metasr": {
+          "scale": 16,
+          "lr_chunk_size": 256,
+          "checkpoint_rdb": true,
+          "rgb_range": 1,
+          "rdn_blocks": 1,
+          "freeze_meanshift": false
+        },
+        "lambda_sr": 0.0,
+        "sr_train_crop": 256,
+        "training": {
+          "use_region_microbatch": true,
+          "region_microbatch_size": 1
+        },
+        "precision": "bf16",
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "epochs": 100,
+        "early_stopping_patience": 15,
+        "seed": 1,
+        "classification_head": "linear",
+        "augmentation": {
+          "enabled": true,
+          "horizontal_flip": 0.5,
+          "vertical_flip": 0.5,
+          "rotation90": true
+        }
+      },
+      "input_shape": [
+        3,
+        3,
+        512,
+        512
+      ],
+      "mil_inputs": [
+        [
+          3,
+          1344
+        ]
+      ],
+      "device": "cuda:0",
+      "torch": "2.13.0+cu130",
+      "optimizer_steps": 1,
+      "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+      "free_before_bytes": 5349834752,
+      "total_bytes": 6441926656,
+      "status": "passed",
+      "loss_cls": 0.3828125,
+      "loss_sr": 0.0,
+      "loss_total": 0.3828125,
+      "logits": [
+        [
+          -0.32421875,
+          0.439453125
+        ]
+      ],
+      "gradients": {
+        "rdn": 0.8573009967803955,
+        "abmil": 0.00438574468716979,
+        "classifier": 11.009016036987305,
+        "p2w": 0.0
+      },
+      "elapsed_seconds": 3.9188850999998976,
+      "max_memory_allocated": 2829829632,
+      "max_memory_reserved": 3472883712
+    }
+  ],
+  "legacy_compatibility": {
+    "old_yaml_tests": "PASS",
+    "old_tests_sha256_unchanged": true,
+    "old_yaml_sha256_unchanged": true,
+    "historical_experiments_sha256_unchanged": true,
+    "five_encoders_vs_base_initialization_and_output": "BITWISE PASS",
+    "legacy_sr0_and_sr01_engine_output_gradient_rng": "BITWISE PASS; small differentiable decoder fixture",
+    "default_equivalence_gate_rng_and_result_vs_base": "BITWISE PASS",
+    "real_checkpoint": "runs/spp_d4_fold1_sr0_aug_300/best.pth",
+    "real_checkpoint_strict_load": "PASS; no full dataset inference"
+  },
+  "full_8192_inference": "NOT TESTED; small streaming oracle and mode-specific entrypoint tests PASS",
+  "formal_training_started": false,
+  "final_diff_check": {
+    "changed_existing_files": [
+      "E2E_MetaSR/README.md",
+      "E2E_MetaSR/engine.py",
+      "E2E_MetaSR/eval_e2e.py",
+      "E2E_MetaSR/infer_sr.py",
+      "E2E_MetaSR/models/baseline.py",
+      "E2E_MetaSR/train_e2e.py",
+      "E2E_MetaSR/validation.py",
+      "E2E_MetaSR/wsi_data.py"
+    ],
+    "all_other_original_tracked_sha256_unchanged": true,
+    "no_staged_changes": true,
+    "new_files": [
+      "configs/spp_d1_1344_native512_aug_sr0.yaml",
+      "configs/spp_d1_1344_native512_aug_sr0_micro1.yaml",
+      "configs/spp_d1_native512_aug_sr0.yaml",
+      "configs/spp_d1_native512_aug_sr01_smoke.yaml",
+      "configs/spp_d1_native512_aug_sr0_micro1.yaml",
+      "data_modes.py",
+      "native_data.py",
+      "reports/native512_compatibility_20261021.md",
+      "reports/native512_tests_20261021.log",
+      "reports/native512_validation_20261021.json",
+      "scripts/probe_native512.py",
+      "tests/test_native512_data.py",
+      "tests/test_native512_geometry.py",
+      "tests/test_native512_integration.py",
+      "tests/test_native512_metasr.py"
+    ]
+  }
+}

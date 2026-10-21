@@ -63,7 +63,7 @@ def compare_gradients(first, second):
     return error
 
 
-def run_equivalence(device="cpu", rdn_blocks=16):
+def run_equivalence(device="cpu", rdn_blocks=16, scales=(2, 3, 4)):
     torch.manual_seed(20260927)
     device = torch.device(device)
     reference = MetaRDN(official_args()).to(device).eval()
@@ -80,7 +80,7 @@ def run_equivalence(device="cpu", rdn_blocks=16):
                "selected_config": f"RDN-B/G0=64/D={rdn_blocks}/C=8/G=64",
                "is_official_rdn_b": rdn_blocks == 16,
                "upsampling": []}
-    for scale in (2, 3, 4):
+    for scale in scales:
         reference.scale = optimized.scale = scale
         lr = torch.randn(1, 3, 4, 5, device=device)
         positions, mask = input_matrix_wpn(4, 5, scale)

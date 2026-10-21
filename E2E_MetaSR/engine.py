@@ -10,6 +10,7 @@ from PIL import Image
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, roc_auc_score
 
 from augmentation import AugmentedPath
+from data_modes import data_spec
 from paired_geometry import crop_transformed
 from wsi_data import load_images
 
@@ -46,16 +47,17 @@ def region_batch_size(config, n_regions):
 def wsi_loss(model, sample, device, config):
     """Retain a normal autograd graph; no gradient cache, BN replay or RNG restore."""
     n = sample["n_regions"]
+    spec = _sample_data_spec(model, sample, config)
     batch_size = region_batch_size(config, n)
     coefficient = config["lambda_sr"]
     if coefficient:
         crop = config["sr_train_crop"]
         # Sample once per region before batching, so batching does not change the crops.
         boxes = [(y, x, crop, crop)
-                 for y, x in torch.randint(8192 - crop + 1, (n, 2)).tolist()]
+                 for y, x in torch.randint(spec.hr_size - crop + 1, (n, 2)).tolist()]
     embeddings, sr_terms = [], []
     for start in range(0, n, batch_size):
-        lr = load_images(sample["lr_paths"][start:start+batch_size], 256).to(device)
+        lr = load_images(sample["lr_paths"][start:start+batch_size], spec.lr_size).to(device)
         with autocast(device, config["precision"]):
             feature, embedding = model.encode_regions(lr)
             embeddings.append(embedding.float())
@@ -71,6 +73,15 @@ def wsi_loss(model, sample, device, config):
         cls_loss = F.cross_entropy(logits, target)
     sr_loss = torch.stack(sr_terms).sum() if sr_terms else cls_loss.new_zeros(())
     return cls_loss + coefficient * sr_loss, cls_loss, sr_loss, logits
+
+
+def _sample_data_spec(model, sample, config):
+    spec = data_spec(config)
+    if sample.get("data_mode", "legacy256") != spec.mode:
+        raise ValueError("WSI data mode differs from the configured data mode")
+    if spec.mode == "native512" and model.sr.scale != spec.scale:
+        raise ValueError("native512 requires a scale=16 model")
+    return spec
 
 
 def memory_summary(device):
@@ -114,12 +125,13 @@ def evaluate(model, loader, device, config):
     labels, scores, decisions, predictions = [], [], [], []
     loss_sum = 0.0
     for sample in loader:
+        spec = _sample_data_spec(model, sample, config)
         chunks = []
         batch_size = region_batch_size(config, sample["n_regions"])
         for start in range(0, sample["n_regions"], batch_size):
             paths = sample["lr_paths"][start:start+batch_size]
             with autocast(device, config["precision"]):
-                _, embedding = model.encode_regions(load_images(paths, 256).to(device))
+                _, embedding = model.encode_regions(load_images(paths, spec.lr_size).to(device))
             chunks.append(embedding.float())
         with autocast(device, config["precision"]):
             logits = model.forward_embeddings(torch.cat(chunks))

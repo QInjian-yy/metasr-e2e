@@ -18,6 +18,7 @@ import yaml
 from torch.utils.data import DataLoader
 
 from augmentation import AugmentationConfig, load_augmentation_config
+from data_modes import data_spec, validate_data_config
 from engine import evaluate, train_wsi
 from experiments.summarize import summarize
 from models.baseline import MetaSRABMIL
@@ -37,8 +38,7 @@ def load_config(path):
         raise ValueError("classification_head must be linear or mlp")
     if config["classification_head"] == "mlp" and config["classification_encoder"] != "spp":
         raise ValueError("classification_head=mlp requires classification_encoder=spp")
-    if config["metasr"]["scale"] != 32 or config["metasr"]["rgb_range"] != 1:
-        raise ValueError("This dataset uses 256 -> 8192 and RGB in [0,1]: scale=32, rgb_range=1")
+    spec = validate_data_config(config)
     if config["precision"] not in ("fp32", "bf16"):
         raise ValueError("precision must be fp32 or bf16")
     if not isinstance(config["metasr"]["checkpoint_rdb"], bool):
@@ -59,7 +59,7 @@ def load_config(path):
     for name in ("sr_train_crop", "epochs", "early_stopping_patience"):
         if isinstance(config[name], bool) or not isinstance(config[name], int) or config[name] < 1:
             raise ValueError(f"{name} must be a positive integer")
-    if config["sr_train_crop"] >= 8192:
+    if config["sr_train_crop"] >= spec.hr_size:
         raise ValueError("Training requires a crop smaller than 8192; use infer_sr.py for full reconstruction")
     if not math.isfinite(config["lambda_sr"]) or config["lambda_sr"] < 0:
         raise ValueError("lambda_sr must be finite and nonnegative")
@@ -71,8 +71,10 @@ def load_config(path):
 
 
 def provenance(data_root, dataset):
-    paths = {"manifest": Path(data_root) / "manifests/patch_manifest.csv",
+    paths = {"manifest": getattr(dataset, "manifest_csv", Path(data_root) / "manifests/patch_manifest.csv"),
              "labels": dataset.labels_csv, "split": dataset.split_csv}
+    if hasattr(dataset, "verification_json"):
+        paths["verification"] = dataset.verification_json
     return {name: {"path": str(path.resolve()), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
             for name, path in paths.items()}
 
@@ -98,12 +100,16 @@ def main():
                         help="Optional geometry YAML; overrides the main config's augmentation mapping")
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument("--fold", type=int, default=0)
-    parser.add_argument("--labels-csv", type=Path, default=ROOT / "downstream_train/camelyon16_labels.csv")
-    parser.add_argument("--split-dir", type=Path, default=ROOT / "downstream_train")
+    parser.add_argument("--labels-csv", type=Path)
+    parser.add_argument("--split-dir", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
     config = load_config(args.config)
+    spec = data_spec(config)
+    if spec.mode == "legacy256":
+        args.labels_csv = args.labels_csv or ROOT / "downstream_train/camelyon16_labels.csv"
+        args.split_dir = args.split_dir or ROOT / "downstream_train"
     if args.augmentation_config is not None:
         config["augmentation"] = asdict(load_augmentation_config(args.augmentation_config))
     device = torch.device(args.device)
@@ -116,7 +122,11 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     # Check the selected depth against the vendored forward before training.
     torch.set_num_threads(min(4, torch.get_num_threads()))
-    gate = run_equivalence(rdn_blocks=config["metasr"].get("rdn_blocks", 16))
+    native_options = ({"data_mode": spec.mode,
+                       "manifest_csv": config.get("data_manifest", "manifests/patch_manifest.csv")}
+                      if spec.mode == "native512" else {})
+    gate = run_equivalence(rdn_blocks=config["metasr"].get("rdn_blocks", 16),
+                           **({"scales": (2, 3, 4, 16)} if native_options else {}))
     (args.output / "equivalence.json").write_text(json.dumps(gate, indent=2), encoding="utf-8")
     print(f"Decoder equivalence and checkpoint gate passed: {gate['selected_config']}", flush=True)
     random.seed(config["seed"])
@@ -125,7 +135,8 @@ def main():
     torch.cuda.manual_seed_all(config["seed"])
     torch.backends.cudnn.benchmark = False
     train_data, val_data = load_fold_datasets(args.data_root, args.fold, args.labels_csv,
-        args.split_dir, require_hr=config["lambda_sr"] > 0, augmentation=config.get("augmentation"))
+        args.split_dir, require_hr=config["lambda_sr"] > 0, augmentation=config.get("augmentation"),
+        **native_options)
     if set(sample["label"] for sample in val_data.samples) != {0, 1}:
         raise ValueError("Validation needs both classes for val_auc checkpoint selection")
     loaders = [DataLoader(data, batch_size=1, shuffle=shuffle, collate_fn=collate_one_wsi)
@@ -171,6 +182,7 @@ def main():
             else:
                 stale += 1
             saved = {"format": "metasr-abmil-v2", "architecture": model.architecture(),
+                     "data_spec": spec.metadata(),
                      "epoch": epoch, "fold": args.fold,
                      "config": config, "data_provenance": data_info, "model_state": model.state_dict(),
                      "optimizer_state": optimizer.state_dict(), "best_val_auc": best_auc}

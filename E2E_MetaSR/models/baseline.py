@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from torch import nn
 from torchvision.models import resnet18
 
+from data_modes import checkpoint_data_spec
 from models.abmil import GatedAttentionMIL
 from models.metasr import MemoryEfficientMetaRDN
 from models.spp_1344 import SpatialPyramidPooling1344
@@ -111,6 +112,7 @@ class MetaSRABMIL(nn.Module):
 def model_from_checkpoint(saved, device="cpu"):
     """Construct the saved architecture and strictly load every model parameter."""
     config = saved["config"]
+    checkpoint_data_spec(saved)
     if saved.get("format") == "metasr-abmil-v1":
         classification_encoder = "resnet18"
         if (config.get("classification_encoder", "resnet18") != "resnet18"

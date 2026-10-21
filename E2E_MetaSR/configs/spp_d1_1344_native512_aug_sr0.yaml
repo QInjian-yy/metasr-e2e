@@ -1,0 +1,27 @@
+data_mode: native512
+data_manifest: Manifests/patch_manifest.csv
+classification_encoder: spp_1344
+metasr:
+  scale: 16
+  lr_chunk_size: 256
+  checkpoint_rdb: true
+  rgb_range: 1
+  rdn_blocks: 1
+  freeze_meanshift: false
+lambda_sr: 0.0
+sr_train_crop: 256
+training:
+  use_region_microbatch: false
+  region_microbatch_size: 1
+precision: bf16
+lr: 0.0001
+weight_decay: 0.0001
+epochs: 100
+early_stopping_patience: 15
+seed: 1
+classification_head: linear
+augmentation:
+  enabled: true
+  horizontal_flip: 0.5
+  vertical_flip: 0.5
+  rotation90: true
