@@ -1,0 +1,33 @@
+data_mode: native512
+data_manifest: Manifests/patch_manifest.csv
+classification_encoder: spp
+classification_head: linear
+mil_pooling: meanmil
+metasr:
+  scale: 16
+  lr_chunk_size: 256
+  checkpoint_rdb: true
+  rgb_range: 1
+  rdn_blocks: 1
+  freeze_meanshift: true
+lambda_sr: 0.05
+sr_train_crop: 256
+training:
+  use_region_microbatch: true
+  region_microbatch_size: 4
+  label_smoothing: 0.1
+  region_dropout: 0.15
+precision: bf16
+lr: 5.0e-05
+weight_decay: 0.001
+epochs: 80
+early_stopping_patience: 12
+seed: 1
+augmentation:
+  enabled: true
+  horizontal_flip: 0.5
+  vertical_flip: 0.5
+  rotation90: true
+lr_scheduler: cosine
+warmup_epochs: 3
+min_lr: 1.0e-06
